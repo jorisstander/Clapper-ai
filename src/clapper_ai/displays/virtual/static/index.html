@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>clapper-ai</title>
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      background: #17181c;
+      color: #8a8f98;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+    canvas { max-width: 96vw; height: auto; }
+    #status { font-size: 0.8rem; letter-spacing: 0.1em; text-transform: uppercase; }
+  </style>
+</head>
+<body>
+  <canvas id="board"></canvas>
+  <div id="status">connecting…</div>
+  <script src="/static/board.js"></script>
+</body>
+</html>

@@ -21,7 +21,7 @@ dependencies = [
 llm = ["anthropic"]
 mic = []         # placeholder: speech-to-text input (later phase)
 vestaboard = []  # placeholder: real hardware display (later phase)
-dev = ["pytest", "pytest-asyncio", "ruff"]
+dev = ["pytest", "pytest-asyncio", "ruff", "httpx2"]  # httpx2: FastAPI TestClient
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/clapper_ai"]
