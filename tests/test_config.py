@@ -54,6 +54,18 @@ def test_missing_sections_fall_back_to_defaults(tmp_path):
     assert (config.board.rows, config.board.cols) == (6, 22)
 
 
+def test_anthropic_llm_is_one_config_value_away(tmp_path, monkeypatch):
+    pytest.importorskip("anthropic", reason="install the `llm` extra to test this")
+    from clapper_ai.llm.anthropic_client import AnthropicClient
+
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "sk-ant-test-not-real")
+    path = write_config(tmp_path, "llm: {type: anthropic}")
+
+    _, _, llm = build_adapters(load_config(path))
+
+    assert isinstance(llm, AnthropicClient)
+
+
 def test_unknown_type_errors_and_lists_valid_options(tmp_path):
     path = write_config(tmp_path, "display: {type: hologram}")
     with pytest.raises(SystemExit, match="hologram") as excinfo:
