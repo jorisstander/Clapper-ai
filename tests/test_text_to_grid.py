@@ -47,6 +47,13 @@ def test_word_longer_than_cols_is_hard_broken():
     assert grid[1] == codes("EF") + [0, 0]
 
 
+def test_hard_break_when_the_current_line_is_already_full():
+    # Regression: a long word after a full line must not overflow that line.
+    grid = text_to_grid("TOO MANY", rows=2, cols=3)
+    assert grid[0] == codes("TOO")
+    assert grid[1] == codes("MAN")
+
+
 def test_truncates_to_rows():
     grid = text_to_grid("AA BB CC", rows=2, cols=2)
     assert grid == [codes("AA"), codes("BB")]

@@ -30,19 +30,20 @@ def _word_wrap(text: str, cols: int) -> list[str]:
     lines: list[str] = []
     current = ""
     for word in text.split():
-        # Hard-break words that could never fit on one line.
-        while len(word) > cols:
-            space_left = cols - len(current) - (1 if current else 0)
-            head, word = word[:space_left], word[space_left:]
-            lines.append(f"{current} {head}".strip())
-            current = ""
-        if not current:
-            current = word
-        elif len(current) + 1 + len(word) <= cols:
-            current += f" {word}"
-        else:
-            lines.append(current)
-            current = word
+        while word:
+            if not current:
+                if len(word) <= cols:
+                    current = word
+                    break
+                # Hard-break a word that could never fit on one line.
+                lines.append(word[:cols])
+                word = word[cols:]
+            elif len(current) + 1 + len(word) <= cols:
+                current += f" {word}"
+                break
+            else:
+                lines.append(current)
+                current = ""
     if current:
         lines.append(current)
     return lines
