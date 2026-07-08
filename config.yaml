@@ -1,0 +1,15 @@
+# clapper-ai configuration. Swap the ends here — the core never changes.
+# See config.example.yaml for every option explained.
+
+input:
+  type: text        # where prompts come from
+
+display:
+  type: virtual     # where grids are rendered
+
+llm:
+  type: fake        # "fake" needs no key; "anthropic" needs pip install ".[llm]" + ANTHROPIC_API_KEY
+
+board:
+  rows: 6
+  cols: 22

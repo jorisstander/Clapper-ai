@@ -1,0 +1,26 @@
+# clapper-ai configuration reference.
+# Copy over config.yaml and edit. Every swap is one value here — no code changes.
+
+input:
+  # Valid types: text
+  #   text     — read prompts from the terminal (default, zero dependencies)
+  # Later phases add: mic, phone
+  type: text
+
+display:
+  # Valid types: virtual
+  #   virtual  — split-flap board in your browser at http://127.0.0.1:8000
+  # Later phases add: vestaboard, diy hardware
+  type: virtual
+
+llm:
+  # Valid types: fake, anthropic
+  #   fake      — deterministic echo, no API key needed (default)
+  #   anthropic — real answers; needs `pip install ".[llm]"` and the
+  #               ANTHROPIC_API_KEY environment variable (see .env.example)
+  type: fake
+
+board:
+  # Grid dimensions. 6 x 22 matches a Vestaboard.
+  rows: 6
+  cols: 22

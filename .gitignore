@@ -17,6 +17,9 @@ env/
 .pytest_cache/
 .ruff_cache/
 
+# Local agent/editor tooling
+.claude/
+
 # Editors / OS
 .vscode/
 .idea/
