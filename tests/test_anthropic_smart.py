@@ -91,3 +91,12 @@ async def test_malformed_layout_raises_so_the_brain_can_apologize():
     client, _ = make_client({"layout": {"type": "nonsense"}})
     with pytest.raises(Exception):  # noqa: B017
         await client.complete("hello", max_chars=132)
+
+
+def test_schema_color_names_match_the_layout_model():
+    from typing import get_args
+
+    from clapper_ai.core.layout import ColorName
+    from clapper_ai.llm.anthropic_smart import _COLOR_NAMES
+
+    assert _COLOR_NAMES == list(get_args(ColorName))

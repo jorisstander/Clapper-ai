@@ -57,6 +57,9 @@ llm:
 Run it again and ask something real. Answers are kept short enough to fit the
 6×22 board.
 
+Want the AI to also *design* the board — centered layouts, color accents,
+web search for live facts, even tile art? Use `type: anthropic-smart` instead.
+
 ## Troubleshooting
 
 - **Board stays blank** — check the page says "connected" under the board;

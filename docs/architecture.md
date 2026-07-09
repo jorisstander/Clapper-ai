@@ -25,7 +25,8 @@ imports a concrete adapter, which is what keeps the ends swappable.
 TextInput.listen()          "what is rust"
         │
         ▼
-Brain.handle(text)          builds ANSWER_PROMPT, budget = rows × cols chars
+Brain.handle(text)          hands the question to the LLM client (each
+                            client owns its own prompt)
         │
         ▼
 LLMClient.complete()        "A SYSTEMS LANGUAGE ..."
@@ -44,6 +45,16 @@ DisplaySink.render(grid)    VirtualBoard pushes JSON over WebSocket;
 `validate_grid` is deliberately the last step before the display: no matter
 what an LLM or a future adapter produces, a display only ever receives a grid
 that is exactly the right shape with only codes it supports.
+
+### Smart mode (`llm.type: anthropic-smart`)
+
+One API call answers the question (using web search when it needs live facts)
+and returns a `LayoutSpec` instead of plain text: either `text_layout` (lines
+with alignment and color accents) or `art` (a full grid of tile codes).
+`core/layout.py` renders either shape deterministically — the model chooses
+the design, our code does the tile arithmetic — and `validate_grid` still
+gates the result. If the call or the layout fails, the Brain shows
+`SORRY, TRY AGAIN` instead of crashing.
 
 ## Wiring
 

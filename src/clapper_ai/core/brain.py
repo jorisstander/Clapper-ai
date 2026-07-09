@@ -38,6 +38,7 @@ class Brain:
             else:
                 grid = render_layout(reply, rows, cols)
             validate_grid(grid, rows, cols, self.allowed)
+        # Broad by design: the app loop must survive any single failed turn.
         except Exception as error:
             print(f"Could not get an answer: {error}")
             grid = text_to_grid(FALLBACK_TEXT, rows, cols)

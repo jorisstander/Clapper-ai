@@ -10,10 +10,11 @@ Select with `llm.type: anthropic-smart` in config.yaml.
 """
 
 import json
+from typing import get_args
 
 from pydantic import TypeAdapter
 
-from clapper_ai.core.layout import ArtLayout, LayoutSpec, TextLayout
+from clapper_ai.core.layout import ArtLayout, ColorName, LayoutSpec, TextLayout
 
 SYSTEM_PROMPT = (
     "You control a split-flap display of {rows} rows x {cols} columns. Each tile "
@@ -30,7 +31,7 @@ SYSTEM_PROMPT = (
     "answer, say so briefly on the board."
 )
 
-_COLOR_NAMES = ["red", "orange", "yellow", "green", "blue", "violet", "white"]
+_COLOR_NAMES = list(get_args(ColorName))  # derived — can't drift from layout.py
 
 LAYOUT_SCHEMA = {
     "type": "object",
@@ -108,6 +109,8 @@ class SmartAnthropicClient:
         self.cols = cols
 
     async def complete(self, prompt: str, *, max_chars: int) -> TextLayout | ArtLayout:
+        # max_chars is unused here: the board size reaches the model via
+        # rows/cols in the system prompt instead.
         response = await self._client.messages.create(
             model=self.model,
             max_tokens=4096,  # search summaries + a full art grid fit easily

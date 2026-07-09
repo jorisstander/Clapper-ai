@@ -51,7 +51,10 @@ pip install -e ".[llm]"
 export ANTHROPIC_API_KEY=sk-ant-...   # see .env.example
 ```
 
-then set `llm.type: anthropic` in `config.yaml`. That's the only change.
+then set `llm.type: anthropic` in `config.yaml` for plain-text answers, or
+`llm.type: anthropic-smart` to let the AI also design the board — centered
+layouts with color accents, web search for live facts, and full-tile art
+("paint the great wave"). Either way, that's the only change.
 
 ## Project layout
 

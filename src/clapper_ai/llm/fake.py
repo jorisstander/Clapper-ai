@@ -1,7 +1,7 @@
 """The default LLM: no network, no key, fully deterministic.
 
-It echoes the question — the whole prompt — so the board visibly reacts
-to whatever you type — good enough to demo the whole pipeline.
+It echoes the whole prompt back, so the board visibly reacts to whatever
+you type — good enough to demo the pipeline.
 """
 
 
