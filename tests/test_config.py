@@ -77,3 +77,22 @@ def test_unknown_input_type_lists_options(tmp_path):
     path = write_config(tmp_path, "input: {type: telepathy}")
     with pytest.raises(SystemExit, match="text"):
         build_adapters(load_config(path))
+
+
+def test_smart_anthropic_gets_board_dimensions_from_config(tmp_path, monkeypatch):
+    pytest.importorskip("anthropic", reason="install the `llm` extra to test this")
+    from clapper_ai.llm.anthropic_smart import SmartAnthropicClient
+
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "sk-ant-test-not-real")
+    path = write_config(
+        tmp_path,
+        """
+        llm: {type: anthropic-smart}
+        board: {rows: 3, cols: 11}
+        """,
+    )
+
+    _, _, llm = build_adapters(load_config(path))
+
+    assert isinstance(llm, SmartAnthropicClient)
+    assert (llm.rows, llm.cols) == (3, 11)

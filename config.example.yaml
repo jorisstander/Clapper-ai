@@ -14,10 +14,13 @@ display:
   type: virtual
 
 llm:
-  # Valid types: fake, anthropic
-  #   fake      — deterministic echo, no API key needed (default)
-  #   anthropic — real answers; needs `pip install ".[llm]"` and the
-  #               ANTHROPIC_API_KEY environment variable (see .env.example)
+  # Valid types: fake, anthropic, anthropic-smart
+  #   fake            — deterministic echo, no API key needed (default)
+  #   anthropic       — real answers as plain text; needs `pip install ".[llm]"`
+  #                     and the ANTHROPIC_API_KEY environment variable
+  #   anthropic-smart — real answers AND the AI designs the board layout
+  #                     (centered text, color accents, tile art); can search
+  #                     the web for live facts. Same requirements as anthropic.
   type: fake
 
 board:

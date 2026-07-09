@@ -67,9 +67,16 @@ def _make_anthropic(config: "AppConfig"):
     return AnthropicClient()
 
 
+def _make_smart_anthropic(config: "AppConfig"):
+    from clapper_ai.llm.anthropic_smart import SmartAnthropicClient
+
+    return SmartAnthropicClient(rows=config.board.rows, cols=config.board.cols)
+
+
 LLMS = {
     "fake": lambda config: FakeLLMClient(),
     "anthropic": _make_anthropic,
+    "anthropic-smart": _make_smart_anthropic,
 }
 
 
