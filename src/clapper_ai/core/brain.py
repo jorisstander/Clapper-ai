@@ -7,6 +7,7 @@ Brain knows nothing about keyboards, browsers, hardware — or prompt wording.
 
 from clapper_ai.core.codes import ALLOWED_CODES
 from clapper_ai.core.interfaces import DisplaySink, LLMClient
+from clapper_ai.core.layout import render_layout
 from clapper_ai.core.validate import text_to_grid, validate_grid
 
 
@@ -25,6 +26,9 @@ class Brain:
         """One full turn: question → LLM → grid → validate → display."""
         rows, cols = self.display.rows, self.display.cols
         reply = await self.llm.complete(text, max_chars=rows * cols)
-        grid = text_to_grid(reply, rows, cols)
+        if isinstance(reply, str):
+            grid = text_to_grid(reply, rows, cols)
+        else:
+            grid = render_layout(reply, rows, cols)
         validate_grid(grid, rows, cols, self.allowed)
         await self.display.render(grid)

@@ -8,6 +8,7 @@ import pytest
 
 from clapper_ai.core.brain import Brain
 from clapper_ai.core.grid import Grid
+from clapper_ai.core.layout import ArtLayout, Line, TextLayout
 from clapper_ai.llm.fake import FakeLLMClient
 
 
@@ -112,3 +113,33 @@ async def test_brain_validates_before_rendering():
     with pytest.raises(ValueError):
         await brain.handle("hi")
     assert display.rendered == []
+
+
+class ScriptedLayoutLLM:
+    """Returns a LayoutSpec instead of a string."""
+
+    def __init__(self, spec):
+        self.spec = spec
+
+    async def complete(self, prompt: str, *, max_chars: int):
+        return self.spec
+
+
+async def test_text_layout_reply_is_rendered():
+    display = FakeDisplay(rows=1, cols=4)
+    spec = TextLayout(type="text_layout", lines=[Line(text="HI", align="right")])
+    brain = Brain(llm=ScriptedLayoutLLM(spec), display=display)
+
+    await brain.handle("hi")
+
+    assert display.rendered == [[[0, 0, 8, 9]]]
+
+
+async def test_art_reply_is_rendered():
+    display = FakeDisplay(rows=1, cols=2)
+    spec = ArtLayout(type="art", grid=[[63, 67]])
+    brain = Brain(llm=ScriptedLayoutLLM(spec), display=display)
+
+    await brain.handle("paint something")
+
+    assert display.rendered == [[[63, 67]]]

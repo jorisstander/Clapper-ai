@@ -8,6 +8,7 @@ whether it's a keyboard or a microphone, a browser canvas or real hardware.
 from typing import Protocol
 
 from clapper_ai.core.grid import Grid
+from clapper_ai.core.layout import LayoutSpec
 
 
 class InputSource(Protocol):
@@ -30,8 +31,10 @@ class DisplaySink(Protocol):
 
 
 class LLMClient(Protocol):
-    """The model that turns a prompt into an answer."""
+    """The model that turns a prompt into an answer.
 
-    async def complete(self, prompt: str, *, max_chars: int) -> str:
-        """Return a completion of at most roughly max_chars characters."""
-        ...
+    Returns either plain text (laid out by text_to_grid) or a LayoutSpec
+    (the model designed the board itself; rendered by render_layout).
+    """
+
+    async def complete(self, prompt: str, *, max_chars: int) -> "str | LayoutSpec": ...
