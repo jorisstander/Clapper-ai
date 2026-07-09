@@ -4,11 +4,10 @@ No network, no browser — the Brain only ever sees the three protocols,
 so fakes are all we need to test it end to end.
 """
 
-import pytest
-
 from clapper_ai.core.brain import Brain
-from clapper_ai.core.grid import Grid
+from clapper_ai.core.grid import Grid, blank_grid
 from clapper_ai.core.layout import ArtLayout, Line, TextLayout
+from clapper_ai.core.validate import text_to_grid
 from clapper_ai.llm.fake import FakeLLMClient
 
 
@@ -104,15 +103,14 @@ async def test_brain_with_fake_llm_end_to_end():
     assert any(code != 0 for row in grid for code in row)
 
 
-async def test_brain_validates_before_rendering():
-    # A display that only allows blanks must reject any lettered grid
-    # before render is called.
+async def test_restricted_board_falls_back_to_blank_grid():
+    # allowed={0} can't show letters — not the reply, not the apology.
     display = FakeDisplay(rows=1, cols=2)
     brain = Brain(llm=ScriptedLLM("AB"), display=display, allowed={0})
 
-    with pytest.raises(ValueError):
-        await brain.handle("hi")
-    assert display.rendered == []
+    await brain.handle("hi")
+
+    assert display.rendered == [blank_grid(1, 2)]
 
 
 class ScriptedLayoutLLM:
@@ -143,3 +141,27 @@ async def test_art_reply_is_rendered():
     await brain.handle("paint something")
 
     assert display.rendered == [[[63, 67]]]
+
+
+class ExplodingLLM:
+    async def complete(self, prompt: str, *, max_chars: int) -> str:
+        raise RuntimeError("api down")
+
+
+async def test_llm_error_renders_an_apology_instead_of_crashing():
+    display = FakeDisplay(rows=6, cols=22)
+    brain = Brain(llm=ExplodingLLM(), display=display)
+
+    await brain.handle("hi")
+
+    assert display.rendered == [text_to_grid("SORRY, TRY AGAIN", 6, 22)]
+
+
+async def test_invalid_art_grid_renders_the_apology():
+    display = FakeDisplay(rows=1, cols=2)
+    bad = ArtLayout(type="art", grid=[[999, 999]])  # illegal codes
+    brain = Brain(llm=ScriptedLayoutLLM(bad), display=display)
+
+    await brain.handle("paint")
+
+    assert display.rendered == [text_to_grid("SORRY, TRY AGAIN", 1, 2)]
