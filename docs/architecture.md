@@ -86,5 +86,5 @@ serves the static page and the `/ws` WebSocket.
 
 - **Mic input** → one file in `inputs/`, registry line, `input.type: mic`.
 - **Vestaboard / DIY hardware** → one folder in `displays/`, registry line.
-- **Art mode** (LLM paints with color tiles) → a second Brain mode; the
-  contract already carries colors.
+- **Push-data sources** (Strava, calendar, weather) → a designer-only entry
+  point that feeds content straight into the existing `LayoutSpec` renderer.

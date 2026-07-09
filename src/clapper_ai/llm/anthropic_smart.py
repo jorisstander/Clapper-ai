@@ -31,7 +31,7 @@ SYSTEM_PROMPT = (
     "answer, say so briefly on the board."
 )
 
-_COLOR_NAMES = list(get_args(ColorName))  # derived — can't drift from layout.py
+_COLOR_NAMES = list(get_args(ColorName))  # schema enum can't drift from ColorName
 
 LAYOUT_SCHEMA = {
     "type": "object",

@@ -93,10 +93,11 @@ async def test_malformed_layout_raises_so_the_brain_can_apologize():
         await client.complete("hello", max_chars=132)
 
 
-def test_schema_color_names_match_the_layout_model():
-    from typing import get_args
-
-    from clapper_ai.core.layout import ColorName
+def test_color_names_match_the_tile_codes():
+    # The real drift risk: render_layout does COLOR_CODES[line.color], so every
+    # ColorName must exist in codes.py (and vice versa, so the schema stays
+    # in sync with the renderer).
+    from clapper_ai.core.codes import COLOR_CODES
     from clapper_ai.llm.anthropic_smart import _COLOR_NAMES
 
-    assert _COLOR_NAMES == list(get_args(ColorName))
+    assert _COLOR_NAMES == list(COLOR_CODES)
