@@ -6,7 +6,7 @@ so fakes are all we need to test it end to end.
 
 import pytest
 
-from clapper_ai.core.brain import ANSWER_PROMPT, Brain
+from clapper_ai.core.brain import Brain
 from clapper_ai.core.grid import Grid
 from clapper_ai.llm.fake import FakeLLMClient
 
@@ -56,20 +56,13 @@ async def test_handle_passes_board_capacity_as_max_chars():
     assert llm.max_chars == [6 * 22]
 
 
-async def test_prompt_contains_the_user_text_and_the_instructions():
+async def test_brain_passes_the_raw_question_to_the_llm():
     llm = ScriptedLLM("OK")
     brain = Brain(llm=llm, display=FakeDisplay())
 
     await brain.handle("what is a split-flap display")
 
-    (prompt,) = llm.prompts
-    assert "what is a split-flap display" in prompt
-    assert str(6 * 22) in prompt  # the character budget is spelled out
-
-
-async def test_answer_prompt_constant_is_the_tuning_point():
-    # The prompt lives in one findable constant with a max_chars slot.
-    assert "{max_chars}" in ANSWER_PROMPT
+    assert llm.prompts == ["what is a split-flap display"]
 
 
 async def test_oversized_reply_still_renders_a_valid_grid():
@@ -85,19 +78,17 @@ async def test_oversized_reply_still_renders_a_valid_grid():
 
 async def test_fake_llm_is_deterministic_and_fits_budget():
     fake = FakeLLMClient()
-    first = await fake.complete("PROMPT\nHELLO", max_chars=30)
-    second = await fake.complete("PROMPT\nHELLO", max_chars=30)
+    first = await fake.complete("HELLO", max_chars=30)
+    second = await fake.complete("HELLO", max_chars=30)
     assert first == second
     assert len(first) <= 30
     assert first  # never empty — the board should always show something
 
 
 async def test_fake_llm_echoes_the_question():
-    # The question sits on the prompt's last line; the echo makes the demo
-    # visibly react to what you type.
     fake = FakeLLMClient()
-    reply = await fake.complete("instructions...\nHELLO BOARD", max_chars=100)
-    assert "HELLO BOARD" in reply
+    reply = await fake.complete("HELLO BOARD", max_chars=100)
+    assert reply == "YOU SAID HELLO BOARD"
 
 
 async def test_brain_with_fake_llm_end_to_end():

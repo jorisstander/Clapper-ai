@@ -40,10 +40,9 @@ def make_client(reply: str) -> tuple[AnthropicClient, FakeMessages]:
 
 
 async def test_complete_returns_the_reply_text():
-    client, fake = make_client("PARIS")
+    client, _ = make_client("PARIS")
     reply = await client.complete("capital of france?", max_chars=132)
     assert reply == "PARIS"
-    assert fake.calls[0]["messages"] == [{"role": "user", "content": "capital of france?"}]
 
 
 async def test_reply_is_clamped_to_max_chars():
@@ -56,3 +55,15 @@ async def test_uses_the_current_opus_model():
     client, fake = make_client("OK")
     await client.complete("hi", max_chars=132)
     assert fake.calls[0]["model"] == "claude-opus-4-8"
+
+
+async def test_client_wraps_the_question_in_the_answer_prompt():
+    from clapper_ai.llm.anthropic_client import ANSWER_PROMPT
+
+    client, fake = make_client("PARIS")
+    await client.complete("capital of france?", max_chars=132)
+
+    sent = fake.calls[0]["messages"][0]["content"]
+    assert "capital of france?" in sent
+    assert "132" in sent  # the character budget is spelled out
+    assert "{max_chars}" in ANSWER_PROMPT  # the constant stays tunable
