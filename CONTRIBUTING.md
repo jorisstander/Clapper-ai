@@ -30,7 +30,7 @@ updated `uv.lock`. CI syncs with `--locked` and fails if the two disagree.
 
 ## Ground rules
 
-- **The core never imports a concrete adapter.** `AnswerQuestion` talks only to the
+- **`domain/` and `application/` never import a concrete adapter.** `AnswerQuestion` talks only to the
   `InputSource`, `DisplaySink`, and `LLMClient` protocols in
   `src/clapper_ai/application/ports/`.
 - **New device = one new file, one registry line, one config line.** Add an input under

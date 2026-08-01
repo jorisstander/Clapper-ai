@@ -1,7 +1,7 @@
 # Package restructure: make the clean-architecture layers legible
 
 **Date:** 2026-08-01
-**Status:** approved, ready for implementation planning
+**Status:** implemented on `worktree-restructure-layers`
 
 ## Problem
 
@@ -123,8 +123,15 @@ Five files reference the old paths or the Brain:
 
 `docs/character-codes.md` references `codes.py` and needs the rename.
 
-The claim "new device = one new file + one config line" stays true — only the
-directory it lands in gets one segment longer.
+The directory a new device lands in gains one segment; nothing else about adding
+one changes.
+
+**Correction made during implementation.** This spec originally asserted the README's
+"new device = one new file + one config line" claim stayed true. It was never true —
+`_pick` in `__main__.py` raises `SystemExit` for a name missing from the registry, so
+the registry line was always mandatory, and `__main__.py`'s own docstring already said
+so. `README.md` and `CONTRIBUTING.md` now read "one new file, one registry line, one
+config line", and both worked examples show the import the registry entry needs.
 
 ## Migration order
 
@@ -200,8 +207,8 @@ Each needs its own tests and its own commit.
    changing it is behavioural and stayed out of the rename commit — but it names a
    class that no longer exists, and unlike the `fake` config value (which is public
    interface and deliberately kept), this string has no reason to survive.
-   Successor: `"HELLO FROM THE ECHO LLM"`. Note that
-   branch has no test today, so the change has no regression net; add one with it.
+   Successor: `"HELLO FROM THE ECHO LLM"`. Note that the empty-prompt branch has no
+   test today, so the change has no regression net — add one alongside it.
 9. **`text_layout.py` sits beside a class called `TextLayout`.** The module holds
    `text_to_grid` (plain-string word-wrap); the class in `domain/layout.py` is the
    structured LLM spec with alignment and colour. Different concepts, near-identical
