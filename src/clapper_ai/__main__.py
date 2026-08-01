@@ -74,6 +74,8 @@ def _make_smart_anthropic(config: AppConfig):
 
 
 LLMS = {
+    # Config value stays "fake": it is public interface (README, QUICKSTART,
+    # config.example.yaml). Only the class was renamed to EchoLLMClient.
     "fake": lambda config: EchoLLMClient(),
     "anthropic": _make_anthropic,
     "anthropic-smart": _make_smart_anthropic,

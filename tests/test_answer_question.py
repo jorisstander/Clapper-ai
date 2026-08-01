@@ -76,22 +76,22 @@ async def test_oversized_reply_still_renders_a_valid_grid():
     assert len(grid) == 1 and len(grid[0]) == 3
 
 
-async def test_fake_llm_is_deterministic_and_fits_budget():
-    fake = EchoLLMClient()
-    first = await fake.complete("HELLO", max_chars=30)
-    second = await fake.complete("HELLO", max_chars=30)
+async def test_echo_llm_is_deterministic_and_fits_budget():
+    echo = EchoLLMClient()
+    first = await echo.complete("HELLO", max_chars=30)
+    second = await echo.complete("HELLO", max_chars=30)
     assert first == second
     assert len(first) <= 30
     assert first  # never empty — the board should always show something
 
 
-async def test_fake_llm_echoes_the_question():
-    fake = EchoLLMClient()
-    reply = await fake.complete("HELLO BOARD", max_chars=100)
+async def test_echo_llm_echoes_the_question():
+    echo = EchoLLMClient()
+    reply = await echo.complete("HELLO BOARD", max_chars=100)
     assert reply == "YOU SAID HELLO BOARD"
 
 
-async def test_end_to_end_with_the_fake_llm():
+async def test_end_to_end_with_the_echo_llm():
     display = FakeDisplay(rows=6, cols=22)
     answer_question = AnswerQuestion(llm=EchoLLMClient(), display=display)
 
