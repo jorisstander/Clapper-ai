@@ -189,7 +189,10 @@ Each needs its own tests and its own commit.
 6. **`InputSource` pull vs push**, per the asymmetry section above. To be explored
    together with the shape of the adapter factory in `__main__.py`.
 7. **Punctuation tile codes.** Vestaboard codes 37–62 are unmapped; only letters,
-   digits and colours exist today. Moved here from the `codes.py` docstring.
+   digits and colours exist today. The how-to already lives in
+   `docs/character-codes.md`, including the official Vestaboard Character Codes
+   link and the two files a contributor must update — `domain/tile_codes.py` and
+   the display's own code table. Moved here from that module's docstring.
 8. **The board still says FAKE.** `adapters/llm/echo.py` greets an empty prompt
    with `"HELLO FROM THE FAKE LLM"`. That literal is user-visible board output, so
    changing it is behavioural and stayed out of the rename commit — but it names a

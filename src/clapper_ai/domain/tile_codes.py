@@ -6,6 +6,7 @@ drop-in display later:
     0        blank
     1-26     A-Z
     27-36    digits 1,2,...,9,0  (note: 0 is code 36, after 9)
+    37-62    punctuation — not mapped (see docs/character-codes.md)
     63-69    color tiles: red, orange, yellow, green, blue, violet, white
 """
 
