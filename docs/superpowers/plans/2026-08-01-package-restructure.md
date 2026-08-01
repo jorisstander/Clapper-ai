@@ -568,8 +568,20 @@ values are unchanged, verified by diffing the built maps before and after."
 
 ```bash
 grep -rn "core/\|clapper_ai\.core\|codes\.py\|validate\.py\|fake\.py\|\bBrain\b\|src/clapper_ai/\(inputs\|displays\|llm\)" \
-  --include=*.md . | grep -v "docs/superpowers\|\.venv"
+  --include=*.md --include=*.js --include=*.html . | grep -v "docs/superpowers\|\.venv"
 ```
+
+**Note the non-markdown includes.** `src/clapper_ai/adapters/displays/virtual/static/board.js`
+carries the tile table and points at the old module in two comments:
+
+```
+board.js:4  // Tile codes mirror src/clapper_ai/core/codes.py:
+board.js:9  // --- code table (mirror of core/codes.py) ---
+```
+
+Both must become `src/clapper_ai/domain/tile_codes.py` and `domain/tile_codes.py`.
+A markdown-only sweep misses them, and they point at a file that no longer exists
+after Task 5.
 
 Every hit is a line to fix. The counts are known, so you can check yourself off:
 
