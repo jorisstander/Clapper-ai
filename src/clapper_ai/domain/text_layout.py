@@ -1,4 +1,4 @@
-"""Turn a line of text into a grid of tile codes.
+"""Turn plain text into a grid of tile codes.
 
 Uppercases, word-wraps to the column width, pads and truncates to the board.
 """

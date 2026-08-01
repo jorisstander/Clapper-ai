@@ -95,7 +95,7 @@ async def test_malformed_layout_raises_so_the_brain_can_apologize():
 
 def test_color_names_match_the_tile_codes():
     # The real drift risk: render_layout does COLOR_CODES[line.color], so every
-    # ColorName must exist in codes.py (and vice versa, so the schema stays
+    # ColorName must exist in tile_codes.py (and vice versa, so the schema stays
     # in sync with the renderer).
     from clapper_ai.domain.tile_codes import COLOR_CODES
     from clapper_ai.llm.anthropic_smart import _COLOR_NAMES
