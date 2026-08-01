@@ -154,8 +154,10 @@ Plus two checks the suite cannot make:
 
 - **Dependency rule still holds** — `domain/` and `application/` must import
   nothing from `adapters/`:
-  `grep -rn "adapters" src/clapper_ai/domain src/clapper_ai/application`
-  must return nothing.
+  `grep -rn "from clapper_ai.adapters" src/clapper_ai/domain src/clapper_ai/application`
+  must return nothing. Match the import, not the word "adapters" — the port
+  docstrings legitimately point readers at `adapters/displays/` and `adapters/llm/`,
+  and a bare word match fails on that correct signposting.
 - **The demo still boots** — `uv sync && uv run python -m clapper_ai` prints the
   board URL and exits cleanly on EOF.
 

@@ -695,10 +695,16 @@ git commit -m "docs: update paths and names for the new layout"
 - [ ] **Step 1: Prove the dependency rule still holds**
 
 ```bash
-grep -rn "adapters" src/clapper_ai/domain src/clapper_ai/application | grep -v __pycache__
+grep -rn "from clapper_ai.adapters\|import clapper_ai.adapters" \
+  src/clapper_ai/domain src/clapper_ai/application | grep -v __pycache__
 ```
 
-Expected: no output. The inner rings must not name the outer one.
+Expected: no output. The inner rings must not *import* the outer one.
+
+**Match the import, not the word.** A bare `grep -rn "adapters"` fails here on correct
+code: `application/ports/display_sink.py` and `llm_client.py` both say "Implementations
+live in `adapters/displays/`" in their docstrings, which is exactly the signposting a
+port should carry. The dependency rule is about imports, so the check must be too.
 
 - [ ] **Step 2: Prove no import escaped**
 
