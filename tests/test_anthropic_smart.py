@@ -74,7 +74,7 @@ async def test_request_describes_the_board_and_enables_search():
     await client.complete("hello", max_chars=132)
 
     call = fake.calls[0]
-    assert call["model"] == "claude-opus-4-8"
+    assert call["model"] == "claude-opus-5"
     assert "6" in call["system"] and "22" in call["system"]
     assert call["tools"][0]["name"] == "web_search"
     assert call["output_config"]["format"]["type"] == "json_schema"
