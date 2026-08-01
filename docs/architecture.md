@@ -39,7 +39,8 @@ outside the stack as the only module allowed to name concrete adapters — which
 all the registries below really are. The rule is checkable:
 
 ```bash
-grep -rn "from clapper_ai.adapters" src/clapper_ai/domain src/clapper_ai/application
+grep -rn "from clapper_ai.adapters\|import clapper_ai.adapters" \
+  src/clapper_ai/domain src/clapper_ai/application
 ```
 
 That returns nothing today, and a change that makes it print something is a change
