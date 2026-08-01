@@ -16,5 +16,9 @@ from typing import Protocol
 
 class InputSource(Protocol):
     async def listen(self) -> str:
-        """Block until the user says or types something; return the transcript."""
+        """Block until the user says or types something; return the transcript.
+
+        Raise EOFError when the source is exhausted — the run loop treats it
+        as shutdown.
+        """
         ...
