@@ -4,19 +4,22 @@ Two minutes, no API key, no hardware.
 
 ## 1. Install
 
-Needs Python 3.11+.
+Needs Python 3.14+ and [uv](https://docs.astral.sh/uv/getting-started/installation/).
+(Don't have 3.14? You don't need to install it — `uv sync` fetches it.)
 
 ```bash
-git clone https://github.com/your-org/clapper-ai.git
-cd clapper-ai
-python -m venv .venv && source .venv/bin/activate
-pip install -e .
+git clone https://github.com/jorisstander/Clapper-ai.git
+cd Clapper-ai
+uv sync
 ```
+
+`uv sync` makes the venv and installs the pinned dependencies in one step —
+no activation needed, `uv run` uses it automatically.
 
 ## 2. Run
 
 ```bash
-python -m clapper_ai
+uv run python -m clapper_ai
 ```
 
 You'll see:
@@ -27,7 +30,8 @@ Type a prompt and press Enter. Ctrl-D quits.
 >
 ```
 
-(Port 8000 taken? Run `PORT=8123 python -m clapper_ai` instead.)
+(Port 8000 taken? Run `PORT=8123 uv run python -m clapper_ai` instead — in
+PowerShell that's `$env:PORT=8123; uv run python -m clapper_ai`.)
 
 ## 3. Flap
 
@@ -43,8 +47,8 @@ a deterministic echo, so the whole pipeline runs without any key.
 ## 4. Real answers (optional)
 
 ```bash
-pip install -e ".[llm]"
-export ANTHROPIC_API_KEY=sk-ant-...
+uv sync --extra llm
+export ANTHROPIC_API_KEY=sk-ant-...   # PowerShell: $env:ANTHROPIC_API_KEY = "sk-ant-..."
 ```
 
 Edit `config.yaml` and change one value:
@@ -66,5 +70,6 @@ web search for live facts, even tile art? Use `type: anthropic-smart` instead.
   if not, the server isn't running or you're on the wrong port.
 - **`Unknown ... type` on startup** — a typo in `config.yaml`; the error lists
   the valid options.
-- **`anthropic` type fails** — did you `pip install -e ".[llm]"` and export
-  `ANTHROPIC_API_KEY`?
+- **`anthropic` type fails** — did you `uv sync --extra llm` and set
+  `ANTHROPIC_API_KEY` in the shell you're running from? Nothing reads a `.env`
+  file; the variable has to be exported.

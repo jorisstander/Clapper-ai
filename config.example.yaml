@@ -16,7 +16,7 @@ display:
 llm:
   # Valid types: fake, anthropic, anthropic-smart
   #   fake            — deterministic echo, no API key needed (default)
-  #   anthropic       — real answers as plain text; needs `pip install ".[llm]"`
+  #   anthropic       — real answers as plain text; needs `uv sync --extra llm`
   #                     and the ANTHROPIC_API_KEY environment variable
   #   anthropic-smart — real answers AND the AI designs the board layout
   #                     (centered text, color accents, tile art); can search

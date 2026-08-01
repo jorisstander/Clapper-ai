@@ -1,0 +1,34 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: astral-sh/setup-uv@v7
+        with:
+          python-version: "3.14"
+          enable-cache: true
+
+      # --locked fails the build if uv.lock drifts from pyproject.toml, so a
+      # dependency can never change without the lockfile changing with it.
+      # --all-extras pulls the `llm` extra: those tests inject a fake SDK, so
+      # the whole suite runs here without any API key. The `dev` group comes
+      # along by default — that's where pytest and ruff live.
+      - name: Install
+        run: uv sync --all-extras --locked
+
+      - name: Lint
+        run: uv run ruff check .
+
+      - name: Test
+        run: uv run pytest -q

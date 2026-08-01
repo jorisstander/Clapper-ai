@@ -60,14 +60,14 @@ DISPLAYS = {
     "virtual": lambda config: VirtualBoard(rows=config.board.rows, cols=config.board.cols),
 }
 
-def _make_anthropic(config: "AppConfig"):
+def _make_anthropic(config: AppConfig):
     # Imported lazily so the base install never needs the anthropic package.
     from clapper_ai.llm.anthropic_client import AnthropicClient
 
     return AnthropicClient()
 
 
-def _make_smart_anthropic(config: "AppConfig"):
+def _make_smart_anthropic(config: AppConfig):
     from clapper_ai.llm.anthropic_smart import SmartAnthropicClient
 
     return SmartAnthropicClient(rows=config.board.rows, cols=config.board.cols)

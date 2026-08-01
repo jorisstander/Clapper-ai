@@ -8,7 +8,7 @@ display:
   type: virtual     # where grids are rendered
 
 llm:
-  type: fake        # "fake" needs no key; "anthropic" needs pip install ".[llm]" + ANTHROPIC_API_KEY
+  type: fake        # "fake" needs no key; "anthropic" needs uv sync --extra llm + ANTHROPIC_API_KEY
 
 board:
   rows: 6

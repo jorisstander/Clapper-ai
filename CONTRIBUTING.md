@@ -4,19 +4,29 @@ Thanks for helping! clapper-ai is built for DIY hobbyists — clarity beats clev
 
 ## Setup
 
+Install [uv](https://docs.astral.sh/uv/getting-started/installation/), then:
+
 ```bash
-python -m venv .venv && source .venv/bin/activate
-pip install -e ".[dev]"
+uv sync --all-extras
 ```
+
+That builds the venv, installs the project with every extra plus the `dev`
+dependency group, and pins versions from `uv.lock` — same resolution for you as
+for CI. Later `uv sync --extra llm` calls keep the dev tools: `dev` is a group,
+not an extra, so syncing an extra doesn't prune it.
 
 ## Before opening a PR
 
 ```bash
-ruff check .
-pytest
+uv run ruff check .
+uv run pytest
 ```
 
-Both must pass.
+Both must pass. CI runs the same two commands on every push, against Python
+3.14 — the one version `requires-python` claims. `uv` will fetch it for you.
+
+If you change a dependency in `pyproject.toml`, run `uv lock` and commit the
+updated `uv.lock`. CI syncs with `--locked` and fails if the two disagree.
 
 ## Ground rules
 

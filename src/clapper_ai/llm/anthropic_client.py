@@ -1,6 +1,6 @@
 """Real answers from Claude. Optional: needs the `llm` extra and an API key.
 
-    pip install "clapper-ai[llm]"
+    uv sync --extra llm
     export ANTHROPIC_API_KEY=sk-ant-...   # see .env.example
 
 Then set `llm.type: anthropic` in config.yaml. Nothing else changes.
@@ -24,10 +24,8 @@ class AnthropicClient:
         except ImportError as error:
             raise SystemExit(
                 "The anthropic package is not installed. "
-                'Run: pip install "clapper-ai[llm]"'
+                "Run: uv sync --extra llm"
             ) from error
-        # Reads ANTHROPIC_API_KEY (or other Anthropic credentials) from the
-        # environment — keys never live in code or config.
         self._client = AsyncAnthropic()
         self.model = model
 

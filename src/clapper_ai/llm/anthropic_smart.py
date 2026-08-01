@@ -101,7 +101,7 @@ class SmartAnthropicClient:
         except ImportError as error:
             raise SystemExit(
                 "The anthropic package is not installed. "
-                'Run: pip install "clapper-ai[llm]"'
+                "Run: uv sync --extra llm"
             ) from error
         self._client = AsyncAnthropic()
         self.model = model

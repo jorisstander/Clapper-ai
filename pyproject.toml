@@ -8,10 +8,10 @@ version = "0.1.0"
 description = "Render LLM answers on a split-flap display — virtual board first, real hardware later."
 readme = "README.md"
 license = { file = "LICENSE" }
-requires-python = ">=3.11"
+requires-python = ">=3.14"
 dependencies = [
     "fastapi",
-    "uvicorn[standard]",  # [standard] pulls in the websockets library /ws needs
+    "uvicorn[standard]",
     "pyyaml",
     "pydantic",
 ]
@@ -19,9 +19,11 @@ dependencies = [
 [project.optional-dependencies]
 # The base install runs the full keyless demo. Extras only add real backends.
 llm = ["anthropic"]
-mic = []         # placeholder: speech-to-text input (later phase)
-vestaboard = []  # placeholder: real hardware display (later phase)
-dev = ["pytest", "pytest-asyncio", "ruff", "httpx2"]  # httpx2: FastAPI TestClient
+mic = []         # placeholder: speech-to-text input
+vestaboard = []  # placeholder: real hardware display
+
+[dependency-groups]
+dev = ["pytest", "pytest-asyncio", "ruff", "httpx2"]
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/clapper_ai"]

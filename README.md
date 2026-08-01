@@ -1,5 +1,7 @@
 # clapper-ai
 
+[![CI](https://github.com/jorisstander/Clapper-ai/actions/workflows/ci.yml/badge.svg)](https://github.com/jorisstander/Clapper-ai/actions/workflows/ci.yml)
+
 Ask an LLM a question, watch the answer flap onto a split-flap display.
 
 ## The mental model: swap the ends, keep the middle
@@ -33,10 +35,12 @@ See [docs/add-your-own-board.md](docs/add-your-own-board.md) and
 
 ## Try it (no API key needed)
 
+Needs [uv](https://docs.astral.sh/uv/getting-started/installation/) — it fetches
+Python 3.14 for you if you don't have it.
+
 ```bash
-python -m venv .venv && source .venv/bin/activate
-pip install -e .
-python -m clapper_ai
+uv sync
+uv run python -m clapper_ai
 ```
 
 Open http://127.0.0.1:8000, type a line in the terminal, watch it flap.
@@ -47,8 +51,8 @@ Full walkthrough in [QUICKSTART.md](QUICKSTART.md).
 The default `fake` LLM echoes what you type. For real answers:
 
 ```bash
-pip install -e ".[llm]"
-export ANTHROPIC_API_KEY=sk-ant-...   # see .env.example
+uv sync --extra llm
+export ANTHROPIC_API_KEY=sk-ant-...   # PowerShell: $env:ANTHROPIC_API_KEY = "sk-ant-..."
 ```
 
 then set `llm.type: anthropic` in `config.yaml` for plain-text answers, or
