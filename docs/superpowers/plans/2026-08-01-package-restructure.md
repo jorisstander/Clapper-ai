@@ -567,9 +567,14 @@ values are unchanged, verified by diffing the built maps before and after."
 - [ ] **Step 1: Find every stale reference**
 
 ```bash
-grep -rn "core/\|clapper_ai\.core\|codes\.py\|validate\.py\|fake\.py\|\bBrain\b\|src/clapper_ai/\(inputs\|displays\|llm\)" \
+grep -rn "core/\|clapper_ai\.core\|codes\.py\|validate\.py\|fake\.py\|interfaces\.py\|\bBrain\b\|FakeLLMClient\|src/clapper_ai/\(inputs\|displays\|llm\)" \
   --include=*.md --include=*.js --include=*.html . | grep -v "docs/superpowers\|\.venv"
 ```
+
+**Match symbols, not only paths.** An earlier version of this grep listed only the
+files being moved, which missed renamed *classes*. `docs/architecture.md` names
+`FakeLLMClient` in its port table — that class is now `EchoLLMClient`, and a
+path-only pattern does not see it.
 
 **Note the non-markdown includes.** `src/clapper_ai/adapters/displays/virtual/static/board.js`
 carries the tile table and points at the old module in two comments:
@@ -657,11 +662,13 @@ occurrence of "the Brain" with "AnswerQuestion" and update the module paths. In
 - [ ] **Step 7: Confirm nothing stale is left**
 
 ```bash
-grep -rn "core/\|clapper_ai\.core\|\bBrain\b\|llm/fake\.py" --include=*.md . \
+grep -rn "core/\|clapper_ai\.core\|\bBrain\b\|llm/fake\.py\|FakeLLMClient\|interfaces\.py" \
+  --include=*.md --include=*.js --include=*.html . \
   | grep -v "docs/superpowers\|\.venv"
 ```
 
-Expected: no output.
+Expected: no output. This must mirror step 1's pattern — a verification grep narrower
+than the search grep cannot prove the search was complete.
 
 - [ ] **Step 8: Commit**
 
