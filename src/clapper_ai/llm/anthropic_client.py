@@ -16,7 +16,7 @@ ANSWER_PROMPT = (
 
 
 class AnthropicClient:
-    MODEL = "claude-opus-4-8"
+    MODEL = "claude-opus-5"
 
     def __init__(self, model: str = MODEL):
         try:
@@ -34,9 +34,14 @@ class AnthropicClient:
     async def complete(self, prompt: str, *, max_chars: int) -> str:
         response = await self._client.messages.create(
             model=self.model,
-            # Plain text is roughly one token per 3-4 chars; a small floor
-            # keeps the model from being cut off mid-word on tiny boards.
-            max_tokens=max(256, max_chars),
+            # Deliberately far above what the board can show. Opus 5 thinks by
+            # default and max_tokens caps thinking + answer together, so a
+            # board-sized budget can be spent entirely on thinking. Measured at
+            # 256: "what is 7^23" came back as a thinking block, stop_reason
+            # max_tokens, and no text at all — a blank board. Headroom is free
+            # (billing is per token generated; short answers stay short), and
+            # the reply is truncated to max_chars below.
+            max_tokens=max(2048, max_chars),
             messages=[
                 {
                     "role": "user",
@@ -44,5 +49,8 @@ class AnthropicClient:
                 }
             ],
         )
-        text = "".join(block.text for block in response.content if block.type == "text")
-        return text.strip()[:max_chars]
+        texts = [block.text for block in response.content if block.type == "text"]
+        if response.stop_reason == "refusal" or not texts:
+            # The Brain catches this and shows its apology grid.
+            raise RuntimeError(f"Model refused or gave no answer ({response.stop_reason})")
+        return "".join(texts).strip()[:max_chars]

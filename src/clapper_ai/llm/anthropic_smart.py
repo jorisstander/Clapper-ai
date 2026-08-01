@@ -93,7 +93,7 @@ _LAYOUT_ADAPTER: TypeAdapter = TypeAdapter(LayoutSpec)
 
 
 class SmartAnthropicClient:
-    MODEL = "claude-opus-4-8"
+    MODEL = "claude-opus-5"
 
     def __init__(self, rows: int, cols: int, model: str = MODEL):
         try:
