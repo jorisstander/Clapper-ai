@@ -2,7 +2,7 @@
 
 The registries below are the whole plugin system. To add a device:
 write one file implementing the protocol, add one line to a registry,
-name it in config.yaml. The AnswerQuestion never changes.
+name it in config.yaml. The use case never changes.
 """
 
 import asyncio
@@ -100,7 +100,7 @@ def build_adapters(config: AppConfig):
 
 async def run(config: AppConfig) -> None:
     source, display, llm = build_adapters(config)
-    brain = AnswerQuestion(llm=llm, display=display)
+    answer_question = AnswerQuestion(llm=llm, display=display)
 
     server = None
     server_task = None
@@ -114,8 +114,8 @@ async def run(config: AppConfig) -> None:
     print("Type a prompt and press Enter. Ctrl-D quits.")
     try:
         while True:
-            text = await source.listen()
-            await brain.execute(text)
+            question = await source.listen()
+            await answer_question.execute(question)
     except EOFError:
         print("\nBye.")
     finally:

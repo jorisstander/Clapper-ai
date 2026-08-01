@@ -37,40 +37,40 @@ class ScriptedLLM:
         return self.reply
 
 
-async def test_handle_renders_the_llm_reply_as_a_grid():
+async def test_renders_the_llm_reply_as_a_grid():
     display = FakeDisplay(rows=1, cols=5)
-    brain = AnswerQuestion(llm=ScriptedLLM("HI"), display=display)
+    answer_question = AnswerQuestion(llm=ScriptedLLM("HI"), display=display)
 
-    await brain.execute("greet me")
+    await answer_question.execute("greet me")
 
     assert display.rendered == [[[8, 9, 0, 0, 0]]]
 
 
-async def test_handle_passes_board_capacity_as_max_chars():
+async def test_passes_board_capacity_as_max_chars():
     display = FakeDisplay(rows=6, cols=22)
     llm = ScriptedLLM("OK")
-    brain = AnswerQuestion(llm=llm, display=display)
+    answer_question = AnswerQuestion(llm=llm, display=display)
 
-    await brain.execute("anything")
+    await answer_question.execute("anything")
 
     assert llm.max_chars == [6 * 22]
 
 
-async def test_brain_passes_the_raw_question_to_the_llm():
+async def test_passes_the_raw_question_to_the_llm():
     llm = ScriptedLLM("OK")
-    brain = AnswerQuestion(llm=llm, display=FakeDisplay())
+    answer_question = AnswerQuestion(llm=llm, display=FakeDisplay())
 
-    await brain.execute("what is a split-flap display")
+    await answer_question.execute("what is a split-flap display")
 
     assert llm.prompts == ["what is a split-flap display"]
 
 
 async def test_oversized_reply_still_renders_a_valid_grid():
-    # text_to_grid truncates; the AnswerQuestion must not crash or ship a bad grid.
+    # text_to_grid truncates; the use case must not crash or ship a bad grid.
     display = FakeDisplay(rows=1, cols=3)
-    brain = AnswerQuestion(llm=ScriptedLLM("TOO MANY WORDS HERE"), display=display)
+    answer_question = AnswerQuestion(llm=ScriptedLLM("TOO MANY WORDS HERE"), display=display)
 
-    await brain.execute("hi")
+    await answer_question.execute("hi")
 
     (grid,) = display.rendered
     assert len(grid) == 1 and len(grid[0]) == 3
@@ -91,11 +91,11 @@ async def test_fake_llm_echoes_the_question():
     assert reply == "YOU SAID HELLO BOARD"
 
 
-async def test_brain_with_fake_llm_end_to_end():
+async def test_end_to_end_with_the_fake_llm():
     display = FakeDisplay(rows=6, cols=22)
-    brain = AnswerQuestion(llm=FakeLLMClient(), display=display)
+    answer_question = AnswerQuestion(llm=FakeLLMClient(), display=display)
 
-    await brain.execute("ping")
+    await answer_question.execute("ping")
 
     assert len(display.rendered) == 1
     grid = display.rendered[0]
@@ -106,9 +106,9 @@ async def test_brain_with_fake_llm_end_to_end():
 async def test_restricted_board_falls_back_to_blank_grid():
     # allowed={0} can't show letters — not the reply, not the apology.
     display = FakeDisplay(rows=1, cols=2)
-    brain = AnswerQuestion(llm=ScriptedLLM("AB"), display=display, allowed={0})
+    answer_question = AnswerQuestion(llm=ScriptedLLM("AB"), display=display, allowed={0})
 
-    await brain.execute("hi")
+    await answer_question.execute("hi")
 
     assert display.rendered == [blank_grid(1, 2)]
 
@@ -126,9 +126,9 @@ class ScriptedLayoutLLM:
 async def test_text_layout_reply_is_rendered():
     display = FakeDisplay(rows=1, cols=4)
     spec = TextLayout(type="text_layout", lines=[Line(text="HI", align="right")])
-    brain = AnswerQuestion(llm=ScriptedLayoutLLM(spec), display=display)
+    answer_question = AnswerQuestion(llm=ScriptedLayoutLLM(spec), display=display)
 
-    await brain.execute("hi")
+    await answer_question.execute("hi")
 
     assert display.rendered == [[[0, 0, 8, 9]]]
 
@@ -136,9 +136,9 @@ async def test_text_layout_reply_is_rendered():
 async def test_art_reply_is_rendered():
     display = FakeDisplay(rows=1, cols=2)
     spec = ArtLayout(type="art", grid=[[63, 67]])
-    brain = AnswerQuestion(llm=ScriptedLayoutLLM(spec), display=display)
+    answer_question = AnswerQuestion(llm=ScriptedLayoutLLM(spec), display=display)
 
-    await brain.execute("paint something")
+    await answer_question.execute("paint something")
 
     assert display.rendered == [[[63, 67]]]
 
@@ -150,9 +150,9 @@ class ExplodingLLM:
 
 async def test_llm_error_renders_an_apology_instead_of_crashing():
     display = FakeDisplay(rows=6, cols=22)
-    brain = AnswerQuestion(llm=ExplodingLLM(), display=display)
+    answer_question = AnswerQuestion(llm=ExplodingLLM(), display=display)
 
-    await brain.execute("hi")
+    await answer_question.execute("hi")
 
     assert display.rendered == [text_to_grid("SORRY, TRY AGAIN", 6, 22)]
 
@@ -160,8 +160,8 @@ async def test_llm_error_renders_an_apology_instead_of_crashing():
 async def test_invalid_art_grid_renders_the_apology():
     display = FakeDisplay(rows=1, cols=2)
     bad = ArtLayout(type="art", grid=[[999, 999]])  # illegal codes
-    brain = AnswerQuestion(llm=ScriptedLayoutLLM(bad), display=display)
+    answer_question = AnswerQuestion(llm=ScriptedLayoutLLM(bad), display=display)
 
-    await brain.execute("paint")
+    await answer_question.execute("paint")
 
     assert display.rendered == [text_to_grid("SORRY, TRY AGAIN", 1, 2)]

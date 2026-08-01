@@ -67,7 +67,7 @@ async def test_token_budget_leaves_room_for_thinking():
     assert fake.calls[0]["max_tokens"] >= 2048
 
 
-async def test_refusal_raises_so_the_brain_can_apologize():
+async def test_refusal_raises_so_the_caller_can_apologize():
     client, _ = make_client("", stop_reason="refusal")
     with pytest.raises(RuntimeError, match="refus"):
         await client.complete("hi", max_chars=132)

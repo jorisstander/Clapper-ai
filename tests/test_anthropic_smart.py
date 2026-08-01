@@ -81,13 +81,13 @@ async def test_request_describes_the_board_and_enables_search():
     assert call["messages"] == [{"role": "user", "content": "hello"}]
 
 
-async def test_refusal_raises_so_the_brain_can_apologize():
+async def test_refusal_raises_so_the_caller_can_apologize():
     client, _ = make_client(TEXT_REPLY, stop_reason="refusal")
     with pytest.raises(RuntimeError, match="refus"):
         await client.complete("hello", max_chars=132)
 
 
-async def test_malformed_layout_raises_so_the_brain_can_apologize():
+async def test_malformed_layout_raises_so_the_caller_can_apologize():
     client, _ = make_client({"layout": {"type": "nonsense"}})
     with pytest.raises(Exception):  # noqa: B017
         await client.complete("hello", max_chars=132)
