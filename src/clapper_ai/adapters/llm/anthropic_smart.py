@@ -14,7 +14,7 @@ from typing import get_args
 
 from pydantic import TypeAdapter
 
-from clapper_ai.core.layout import ArtLayout, ColorName, LayoutSpec, TextLayout
+from clapper_ai.domain.layout import ArtLayout, ColorName, LayoutSpec, TextLayout
 
 SYSTEM_PROMPT = (
     "You control a split-flap display of {rows} rows x {cols} columns. Each tile "
@@ -121,7 +121,7 @@ class SmartAnthropicClient:
         )
         texts = [block.text for block in response.content if block.type == "text"]
         if response.stop_reason == "refusal" or not texts:
-            # The Brain catches this and shows its apology grid.
+            # The caller catches this and shows its apology grid.
             raise RuntimeError(f"Model refused or gave no answer ({response.stop_reason})")
         data = json.loads(texts[-1])  # last text block: search blocks may precede it
         return _LAYOUT_ADAPTER.validate_python(data["layout"])

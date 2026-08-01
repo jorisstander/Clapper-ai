@@ -2,8 +2,8 @@
 
 import pytest
 
-from clapper_ai.core.codes import ALLOWED_CODES, CHAR_TO_CODE, COLOR_CODES
-from clapper_ai.core.validate import validate_grid
+from clapper_ai.domain.grid_rules import validate_grid
+from clapper_ai.domain.tile_codes import ALLOWED_CODES, CHAR_TO_CODE, COLOR_CODES
 
 
 def test_valid_grid_is_returned_unchanged():

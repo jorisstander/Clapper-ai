@@ -3,9 +3,9 @@
 import pytest
 
 from clapper_ai.__main__ import build_adapters, load_config
-from clapper_ai.displays.virtual.sink import VirtualBoard
-from clapper_ai.inputs.text_input import TextInput
-from clapper_ai.llm.fake import FakeLLMClient
+from clapper_ai.adapters.displays.virtual.sink import VirtualBoard
+from clapper_ai.adapters.inputs.text_input import TextInput
+from clapper_ai.adapters.llm.echo import EchoLLMClient
 
 
 def write_config(tmp_path, text: str):
@@ -29,7 +29,7 @@ def test_default_config_wires_text_virtual_fake(tmp_path):
 
     assert isinstance(source, TextInput)
     assert isinstance(display, VirtualBoard)
-    assert isinstance(llm, FakeLLMClient)
+    assert isinstance(llm, EchoLLMClient)
 
 
 def test_board_dimensions_come_from_config(tmp_path):
@@ -56,7 +56,7 @@ def test_missing_sections_fall_back_to_defaults(tmp_path):
 
 def test_anthropic_llm_is_one_config_value_away(tmp_path, monkeypatch):
     pytest.importorskip("anthropic", reason="install the `llm` extra to test this")
-    from clapper_ai.llm.anthropic_client import AnthropicClient
+    from clapper_ai.adapters.llm.anthropic_client import AnthropicClient
 
     monkeypatch.setenv("ANTHROPIC_API_KEY", "sk-ant-test-not-real")
     path = write_config(tmp_path, "llm: {type: anthropic}")
@@ -81,7 +81,7 @@ def test_unknown_input_type_lists_options(tmp_path):
 
 def test_smart_anthropic_gets_board_dimensions_from_config(tmp_path, monkeypatch):
     pytest.importorskip("anthropic", reason="install the `llm` extra to test this")
-    from clapper_ai.llm.anthropic_smart import SmartAnthropicClient
+    from clapper_ai.adapters.llm.anthropic_smart import SmartAnthropicClient
 
     monkeypatch.setenv("ANTHROPIC_API_KEY", "sk-ant-test-not-real")
     path = write_config(

@@ -1,6 +1,6 @@
 # Character codes
 
-The single source of truth is `src/clapper_ai/core/codes.py`. The numbering
+The single source of truth is `src/clapper_ai/domain/tile_codes.py`. The numbering
 follows Vestaboard's character codes so a real board can be a drop-in display.
 
 | Code | Tile |
@@ -22,8 +22,8 @@ Notes:
 - `text_to_grid` renders any character it doesn't know as a blank (`0`).
 - Punctuation (`37`–`62`) can be filled in from Vestaboard's official
   [Character Codes reference](https://docs.vestaboard.com/docs/characterCodes)
-  — a good first contribution. Update `CHAR_TO_CODE` in `codes.py` and the
-  mirror table at the top of
-  `src/clapper_ai/displays/virtual/static/board.js`.
+  — a good first contribution. Update `CHAR_TO_CODE` in `domain/tile_codes.py`
+  and the mirror table at the top of
+  `src/clapper_ai/adapters/displays/virtual/static/board.js`.
 - A board that supports fewer tiles passes its own `allowed` set to
   `validate_grid`; the gate enforces whatever the target allows.

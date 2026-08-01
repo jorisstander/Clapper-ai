@@ -1,7 +1,7 @@
 """Tests for text_to_grid: text in, grid of tile codes out."""
 
-from clapper_ai.core.codes import CHAR_TO_CODE
-from clapper_ai.core.validate import text_to_grid
+from clapper_ai.domain.text_layout import text_to_grid
+from clapper_ai.domain.tile_codes import CHAR_TO_CODE
 
 
 def codes(word: str) -> list[int]:

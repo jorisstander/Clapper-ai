@@ -2,7 +2,7 @@
 
 The registries below are the whole plugin system. To add a device:
 write one file implementing the protocol, add one line to a registry,
-name it in config.yaml. The Brain never changes.
+name it in config.yaml. The use case never changes.
 """
 
 import asyncio
@@ -14,11 +14,11 @@ import uvicorn
 import yaml
 from pydantic import BaseModel
 
-from clapper_ai.core.brain import Brain
-from clapper_ai.displays.virtual.server import create_app
-from clapper_ai.displays.virtual.sink import VirtualBoard
-from clapper_ai.inputs.text_input import TextInput
-from clapper_ai.llm.fake import FakeLLMClient
+from clapper_ai.adapters.displays.virtual.server import create_app
+from clapper_ai.adapters.displays.virtual.sink import VirtualBoard
+from clapper_ai.adapters.inputs.text_input import TextInput
+from clapper_ai.adapters.llm.echo import EchoLLMClient
+from clapper_ai.application.interactors.answer_question import AnswerQuestion
 
 HOST = "127.0.0.1"
 # Override with PORT=8123 if something else already owns 8000.
@@ -62,19 +62,21 @@ DISPLAYS = {
 
 def _make_anthropic(config: AppConfig):
     # Imported lazily so the base install never needs the anthropic package.
-    from clapper_ai.llm.anthropic_client import AnthropicClient
+    from clapper_ai.adapters.llm.anthropic_client import AnthropicClient
 
     return AnthropicClient()
 
 
 def _make_smart_anthropic(config: AppConfig):
-    from clapper_ai.llm.anthropic_smart import SmartAnthropicClient
+    from clapper_ai.adapters.llm.anthropic_smart import SmartAnthropicClient
 
     return SmartAnthropicClient(rows=config.board.rows, cols=config.board.cols)
 
 
 LLMS = {
-    "fake": lambda config: FakeLLMClient(),
+    # Config value stays "fake": it is public interface (README, QUICKSTART,
+    # config.example.yaml). Only the class was renamed to EchoLLMClient.
+    "fake": lambda config: EchoLLMClient(),
     "anthropic": _make_anthropic,
     "anthropic-smart": _make_smart_anthropic,
 }
@@ -100,7 +102,7 @@ def build_adapters(config: AppConfig):
 
 async def run(config: AppConfig) -> None:
     source, display, llm = build_adapters(config)
-    brain = Brain(llm=llm, display=display)
+    answer_question = AnswerQuestion(llm=llm, display=display)
 
     server = None
     server_task = None
@@ -114,8 +116,8 @@ async def run(config: AppConfig) -> None:
     print("Type a prompt and press Enter. Ctrl-D quits.")
     try:
         while True:
-            text = await source.listen()
-            await brain.handle(text)
+            question = await source.listen()
+            await answer_question.execute(question)
     except EOFError:
         print("\nBye.")
     finally:

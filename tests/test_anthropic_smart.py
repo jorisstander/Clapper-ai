@@ -6,8 +6,8 @@ import pytest
 
 pytest.importorskip("anthropic", reason="install the `llm` extra to test this")
 
-from clapper_ai.core.layout import ArtLayout, TextLayout  # noqa: E402
-from clapper_ai.llm.anthropic_smart import SmartAnthropicClient  # noqa: E402
+from clapper_ai.adapters.llm.anthropic_smart import SmartAnthropicClient  # noqa: E402
+from clapper_ai.domain.layout import ArtLayout, TextLayout  # noqa: E402
 
 
 class FakeMessages:
@@ -81,13 +81,13 @@ async def test_request_describes_the_board_and_enables_search():
     assert call["messages"] == [{"role": "user", "content": "hello"}]
 
 
-async def test_refusal_raises_so_the_brain_can_apologize():
+async def test_refusal_raises_so_the_caller_can_apologize():
     client, _ = make_client(TEXT_REPLY, stop_reason="refusal")
     with pytest.raises(RuntimeError, match="refus"):
         await client.complete("hello", max_chars=132)
 
 
-async def test_malformed_layout_raises_so_the_brain_can_apologize():
+async def test_malformed_layout_raises_so_the_caller_can_apologize():
     client, _ = make_client({"layout": {"type": "nonsense"}})
     with pytest.raises(Exception):  # noqa: B017
         await client.complete("hello", max_chars=132)
@@ -95,9 +95,9 @@ async def test_malformed_layout_raises_so_the_brain_can_apologize():
 
 def test_color_names_match_the_tile_codes():
     # The real drift risk: render_layout does COLOR_CODES[line.color], so every
-    # ColorName must exist in codes.py (and vice versa, so the schema stays
+    # ColorName must exist in tile_codes.py (and vice versa, so the schema stays
     # in sync with the renderer).
-    from clapper_ai.core.codes import COLOR_CODES
-    from clapper_ai.llm.anthropic_smart import _COLOR_NAMES
+    from clapper_ai.adapters.llm.anthropic_smart import _COLOR_NAMES
+    from clapper_ai.domain.tile_codes import COLOR_CODES
 
     assert _COLOR_NAMES == list(COLOR_CODES)

@@ -1,7 +1,10 @@
-"""Helpers between text and Grid, plus the safety gate before a display."""
+"""Turn plain text into a grid of tile codes.
 
-from clapper_ai.core.codes import BLANK, CHAR_TO_CODE
-from clapper_ai.core.grid import Grid
+Uppercases, word-wraps to the column width, pads and truncates to the board.
+"""
+
+from clapper_ai.domain.grid import Grid
+from clapper_ai.domain.tile_codes import BLANK, CHAR_TO_CODE
 
 
 def text_to_grid(text: str, rows: int, cols: int, align: str = "left") -> Grid:
@@ -47,23 +50,3 @@ def _word_wrap(text: str, cols: int) -> list[str]:
     if current:
         lines.append(current)
     return lines
-
-
-def validate_grid(grid: Grid, rows: int, cols: int, allowed: set[int]) -> Grid:
-    """Assert a grid has exactly rows x cols tiles, all with allowed codes.
-
-    This is the safety gate: every grid passes through here before it reaches
-    a display, so a display never has to defend itself against bad data.
-    Raises ValueError with a precise message on any violation.
-    """
-    if len(grid) != rows:
-        raise ValueError(f"Grid has {len(grid)} rows, expected exactly {rows}")
-    for r, row in enumerate(grid):
-        if len(row) != cols:
-            raise ValueError(f"Row {r} has {len(row)} columns, expected exactly {cols}")
-        for c, code in enumerate(row):
-            if code not in allowed:
-                raise ValueError(
-                    f"Tile code {code} at row {r}, column {c} is not allowed on this board"
-                )
-    return grid

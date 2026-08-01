@@ -2,8 +2,8 @@
 
 from fastapi.testclient import TestClient
 
-from clapper_ai.displays.virtual.server import create_app
-from clapper_ai.displays.virtual.sink import VirtualBoard
+from clapper_ai.adapters.displays.virtual.server import create_app
+from clapper_ai.adapters.displays.virtual.sink import VirtualBoard
 
 
 class FakeSocket:

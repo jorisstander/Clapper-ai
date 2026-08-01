@@ -30,12 +30,13 @@ updated `uv.lock`. CI syncs with `--locked` and fails if the two disagree.
 
 ## Ground rules
 
-- **The core never imports a concrete adapter.** The `Brain` talks only to the
+- **`domain/` and `application/` never import a concrete adapter.** `AnswerQuestion` talks only to the
   `InputSource`, `DisplaySink`, and `LLMClient` protocols in
-  `src/clapper_ai/core/interfaces.py`.
-- **New device = one new file + one config line.** Add an input under
-  `src/clapper_ai/inputs/`, a display under `src/clapper_ai/displays/`, register it
-  in `src/clapper_ai/__main__.py`, done. See `docs/add-your-own-board.md`.
+  `src/clapper_ai/application/ports/`.
+- **New device = one new file, one registry line, one config line.** Add an input under
+  `src/clapper_ai/adapters/inputs/`, a display under
+  `src/clapper_ai/adapters/displays/`, register it in `src/clapper_ai/__main__.py`,
+  done. See `docs/add-your-own-board.md`.
 - **Keep the base install tiny.** Anything with extra dependencies goes behind an
   optional extra in `pyproject.toml`.
 - **Never commit secrets.** API keys come from environment variables; see `.env.example`.

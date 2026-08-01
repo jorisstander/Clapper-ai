@@ -1,4 +1,4 @@
-# clapper-ai configuration. Swap the ends here — the core never changes.
+# clapper-ai configuration. Swap the ends here — domain and application never change.
 # See config.example.yaml for every option explained.
 
 input:

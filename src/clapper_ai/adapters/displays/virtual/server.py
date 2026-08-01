@@ -6,7 +6,7 @@ from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
-from clapper_ai.displays.virtual.sink import VirtualBoard
+from clapper_ai.adapters.displays.virtual.sink import VirtualBoard
 
 STATIC_DIR = Path(__file__).parent / "static"
 

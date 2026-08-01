@@ -1,7 +1,7 @@
 # Package restructure: make the clean-architecture layers legible
 
 **Date:** 2026-08-01
-**Status:** approved, ready for implementation planning
+**Status:** implemented on `worktree-restructure-layers`
 
 ## Problem
 
@@ -123,8 +123,15 @@ Five files reference the old paths or the Brain:
 
 `docs/character-codes.md` references `codes.py` and needs the rename.
 
-The claim "new device = one new file + one config line" stays true — only the
-directory it lands in gets one segment longer.
+The directory a new device lands in gains one segment; nothing else about adding
+one changes.
+
+**Correction made during implementation.** This spec originally asserted the README's
+"new device = one new file + one config line" claim stayed true. It was never true —
+`_pick` in `__main__.py` raises `SystemExit` for a name missing from the registry, so
+the registry line was always mandatory, and `__main__.py`'s own docstring already said
+so. `README.md` and `CONTRIBUTING.md` now read "one new file, one registry line, one
+config line", and both worked examples show the import the registry entry needs.
 
 ## Migration order
 
@@ -154,8 +161,10 @@ Plus two checks the suite cannot make:
 
 - **Dependency rule still holds** — `domain/` and `application/` must import
   nothing from `adapters/`:
-  `grep -rn "adapters" src/clapper_ai/domain src/clapper_ai/application`
-  must return nothing.
+  `grep -rn "from clapper_ai.adapters" src/clapper_ai/domain src/clapper_ai/application`
+  must return nothing. Match the import, not the word "adapters" — the port
+  docstrings legitimately point readers at `adapters/displays/` and `adapters/llm/`,
+  and a bare word match fails on that correct signposting.
 - **The demo still boots** — `uv sync && uv run python -m clapper_ai` prints the
   board URL and exits cleanly on EOF.
 
@@ -189,7 +198,23 @@ Each needs its own tests and its own commit.
 6. **`InputSource` pull vs push**, per the asymmetry section above. To be explored
    together with the shape of the adapter factory in `__main__.py`.
 7. **Punctuation tile codes.** Vestaboard codes 37–62 are unmapped; only letters,
-   digits and colours exist today. Moved here from the `codes.py` docstring.
+   digits and colours exist today. The how-to already lives in
+   `docs/character-codes.md`, including the official Vestaboard Character Codes
+   link and the two files a contributor must update — `domain/tile_codes.py` and
+   the display's own code table. Moved here from that module's docstring.
+8. **The board still says FAKE.** `adapters/llm/echo.py` greets an empty prompt
+   with `"HELLO FROM THE FAKE LLM"`. That literal is user-visible board output, so
+   changing it is behavioural and stayed out of the rename commit — but it names a
+   class that no longer exists, and unlike the `fake` config value (which is public
+   interface and deliberately kept), this string has no reason to survive.
+   Successor: `"HELLO FROM THE ECHO LLM"`. Note that the empty-prompt branch has no
+   test today, so the change has no regression net — add one alongside it.
+9. **`text_layout.py` sits beside a class called `TextLayout`.** The module holds
+   `text_to_grid` (plain-string word-wrap); the class in `domain/layout.py` is the
+   structured LLM spec with alignment and colour. Different concepts, near-identical
+   names, imported on adjacent lines in `answer_question.py`. Kept as specified for
+   this pass. If revisited, `plain_text.py` or `text_wrapping.py` says what the
+   module does without colliding.
 
 No DDD entities are introduced. Nothing in this system has identity or a
 lifecycle; every model is a value object. That is a correct reflection of a

@@ -49,6 +49,6 @@ class AnthropicClient:
         )
         texts = [block.text for block in response.content if block.type == "text"]
         if response.stop_reason == "refusal" or not texts:
-            # The Brain catches this and shows its apology grid.
+            # The caller catches this and shows its apology grid.
             raise RuntimeError(f"Model refused or gave no answer ({response.stop_reason})")
         return "".join(texts).strip()[:max_chars]

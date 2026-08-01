@@ -1,6 +1,6 @@
 # Package Restructure Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> This plan is worked task by task, in order. The `- [ ]` checkboxes track progress.
 
 **Goal:** Dissolve `core/` into `domain/`, `application/` and `adapters/` so the clean-architecture layers are readable from the directory tree.
 
@@ -8,7 +8,7 @@
 
 **Tech Stack:** Python 3.14, uv, pytest, ruff, pydantic.
 
-**Spec:** `docs/superpowers/specs/2026-08-01-package-restructure-design.md`
+**Spec:** `docs/design/specs/2026-08-01-package-restructure-design.md`
 
 ---
 
@@ -567,9 +567,26 @@ values are unchanged, verified by diffing the built maps before and after."
 - [ ] **Step 1: Find every stale reference**
 
 ```bash
-grep -rn "core/\|clapper_ai\.core\|codes\.py\|validate\.py\|fake\.py\|\bBrain\b\|src/clapper_ai/\(inputs\|displays\|llm\)" \
-  --include=*.md . | grep -v "docs/superpowers\|\.venv"
+grep -rn "core/\|clapper_ai\.core\|\bcodes\.py\|validate\.py\|fake\.py\|interfaces\.py\|\bBrain\b\|FakeLLMClient\|src/clapper_ai/\(inputs\|displays\|llm\)" \
+  --include=*.md --include=*.js --include=*.html . | grep -v "docs/design\|\.venv"
 ```
+
+**Match symbols, not only paths.** An earlier version of this grep listed only the
+files being moved, which missed renamed *classes*. `docs/architecture.md` names
+`FakeLLMClient` in its port table — that class is now `EchoLLMClient`, and a
+path-only pattern does not see it.
+
+**Note the non-markdown includes.** `src/clapper_ai/adapters/displays/virtual/static/board.js`
+carries the tile table and points at the old module in two comments:
+
+```
+board.js:4  // Tile codes mirror src/clapper_ai/core/codes.py:
+board.js:9  // --- code table (mirror of core/codes.py) ---
+```
+
+Both must become `src/clapper_ai/domain/tile_codes.py` and `domain/tile_codes.py`.
+A markdown-only sweep misses them, and they point at a file that no longer exists
+after Task 5.
 
 Every hit is a line to fix. The counts are known, so you can check yourself off:
 
@@ -644,12 +661,25 @@ occurrence of "the Brain" with "AnswerQuestion" and update the module paths. In
 
 - [ ] **Step 7: Confirm nothing stale is left**
 
+Re-run step 1's pattern, character for character:
+
 ```bash
-grep -rn "core/\|clapper_ai\.core\|\bBrain\b\|llm/fake\.py" --include=*.md . \
-  | grep -v "docs/superpowers\|\.venv"
+grep -rn "core/\|clapper_ai\.core\|\bcodes\.py\|validate\.py\|fake\.py\|interfaces\.py\|\bBrain\b\|FakeLLMClient\|src/clapper_ai/\(inputs\|displays\|llm\)" \
+  --include=*.md --include=*.js --include=*.html . | grep -v "docs/design\|\.venv"
 ```
 
 Expected: no output.
+
+**Note the word boundary on `\bcodes\.py`.** Without it the pattern matches
+`tile_codes.py` as a substring — the new, correct filename — so "expected: no output"
+would be unreachable and the check could never pass. `_` is a word character, so
+`\b` before `codes` excludes `tile_codes` while still catching a bare `codes.py`.
+
+**It must be the same pattern as step 1, not a subset.** A verification grep narrower
+than the search grep cannot prove the search was complete — it returns "no output" for
+references it was never looking for. Note that after Task 4, `src/clapper_ai/adapters/displays/…`
+no longer matches the `src/clapper_ai/\(inputs\|displays\|llm\)` alternation, so that
+clause is a genuine must-be-zero check on the moved paths rather than only a find-time net.
 
 - [ ] **Step 8: Commit**
 
@@ -665,15 +695,21 @@ git commit -m "docs: update paths and names for the new layout"
 - [ ] **Step 1: Prove the dependency rule still holds**
 
 ```bash
-grep -rn "adapters" src/clapper_ai/domain src/clapper_ai/application | grep -v __pycache__
+grep -rn "from clapper_ai.adapters\|import clapper_ai.adapters" \
+  src/clapper_ai/domain src/clapper_ai/application | grep -v __pycache__
 ```
 
-Expected: no output. The inner rings must not name the outer one.
+Expected: no output. The inner rings must not *import* the outer one.
+
+**Match the import, not the word.** A bare `grep -rn "adapters"` fails here on correct
+code: `application/ports/display_sink.py` and `llm_client.py` both say "Implementations
+live in `adapters/displays/`" in their docstrings, which is exactly the signposting a
+port should carry. The dependency rule is about imports, so the check must be too.
 
 - [ ] **Step 2: Prove no import escaped**
 
 ```bash
-grep -rn "clapper_ai\.core" --include=*.py --include=*.md . | grep -v "\.venv\|docs/superpowers\|__pycache__"
+grep -rn "clapper_ai\.core" --include=*.py --include=*.md . | grep -v "\.venv\|docs/design\|__pycache__"
 ```
 
 Expected: no output.
