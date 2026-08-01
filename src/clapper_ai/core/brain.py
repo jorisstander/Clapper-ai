@@ -7,7 +7,8 @@ If the LLM call or its layout fails, the board still responds: it falls back
 to an apology, or — if even that can't pass validation — a blank grid.
 """
 
-from clapper_ai.core.interfaces import DisplaySink, LLMClient
+from clapper_ai.application.ports.display_sink import DisplaySink
+from clapper_ai.application.ports.llm_client import LLMClient
 from clapper_ai.domain.grid import blank_grid
 from clapper_ai.domain.grid_rules import validate_grid
 from clapper_ai.domain.layout import render_layout
