@@ -1,12 +1,12 @@
 // Virtual split-flap board: renders grids of tile codes on a <canvas>
 // and flips tiles to their new value when a new grid arrives.
 //
-// Tile codes mirror src/clapper_ai/core/codes.py:
+// Tile codes mirror src/clapper_ai/domain/tile_codes.py:
 //   0 blank, 1-26 A-Z, 27-36 digits 1..9,0, 63-69 color tiles.
 
 "use strict";
 
-// --- code table (mirror of core/codes.py) ----------------------------------
+// --- code table (mirror of domain/tile_codes.py) ----------------------------
 
 const CODE_TO_CHAR = { 0: " " };
 "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").forEach((ch, i) => { CODE_TO_CHAR[i + 1] = ch; });

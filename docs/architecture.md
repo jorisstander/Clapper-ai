@@ -8,16 +8,18 @@ Every component communicates through a single data structure:
 Grid = list[list[int]]   # rows × cols; each int is one tile code
 ```
 
-Around that contract sit three protocols (`src/clapper_ai/core/interfaces.py`):
+Around that contract sit three protocols, one file each under
+`src/clapper_ai/application/ports/`:
 
 | Protocol | Job | Today's adapter |
 |---|---|---|
 | `InputSource` | `listen() -> str` — wait for an utterance | `TextInput` (stdin) |
-| `LLMClient` | `complete(prompt, max_chars) -> str` | `FakeLLMClient`, `AnthropicClient` |
+| `LLMClient` | `complete(prompt, max_chars) -> str` | `EchoLLMClient`, `AnthropicClient` |
 | `DisplaySink` | `render(grid)` — show it, own the animation | `VirtualBoard` (browser) |
 
-The `Brain` (`core/brain.py`) depends **only** on these protocols. It never
-imports a concrete adapter, which is what keeps the ends swappable.
+`AnswerQuestion` (`application/interactors/answer_question.py`) depends **only**
+on these protocols. It never imports a concrete adapter, which is what keeps the
+ends swappable.
 
 ## The flow
 
@@ -25,7 +27,7 @@ imports a concrete adapter, which is what keeps the ends swappable.
 TextInput.listen()          "what is rust"
         │
         ▼
-Brain.handle(text)          hands the question to the LLM client (each
+AnswerQuestion.execute()    hands the question to the LLM client (each
                             client owns its own prompt)
         │
         ▼
@@ -51,9 +53,9 @@ that is exactly the right shape with only codes it supports.
 One API call answers the question (using web search when it needs live facts)
 and returns a `LayoutSpec` instead of plain text: either `text_layout` (lines
 with alignment and color accents) or `art` (a full grid of tile codes).
-`core/layout.py` renders either shape deterministically — the model chooses
+`domain/layout.py` renders either shape deterministically — the model chooses
 the design, our code does the tile arithmetic — and `validate_grid` still
-gates the result. If the call or the layout fails, the Brain shows
+gates the result. If the call or the layout fails, the use case shows
 `SORRY, TRY AGAIN` instead of crashing.
 
 ## Wiring
@@ -64,8 +66,8 @@ runs the loop:
 
 ```python
 while True:
-    text = await source.listen()
-    await brain.handle(text)
+    question = await source.listen()
+    await answer_question.execute(question)
 ```
 
 When the display is the `VirtualBoard`, it also starts a Uvicorn server that
@@ -73,9 +75,9 @@ serves the static page and the `/ws` WebSocket.
 
 ## The virtual board
 
-- `displays/virtual/sink.py` — `VirtualBoard` keeps the latest grid and a set
-  of connected sockets; `render()` broadcasts `{rows, cols, grid}` as JSON.
-- `displays/virtual/server.py` — FastAPI app: `GET /` serves the page,
+- `adapters/displays/virtual/sink.py` — `VirtualBoard` keeps the latest grid and
+  a set of connected sockets; `render()` broadcasts `{rows, cols, grid}` as JSON.
+- `adapters/displays/virtual/server.py` — FastAPI app: `GET /` serves the page,
   `/ws` attaches a browser to the board. A tab that connects late immediately
   receives the current grid.
 - `static/board.js` — a `<canvas>`, no build step. Each tile that changed
@@ -84,7 +86,7 @@ serves the static page and the `/ws` WebSocket.
 
 ## Later phases (seams already in place)
 
-- **Mic input** → one file in `inputs/`, registry line, `input.type: mic`.
-- **Vestaboard / DIY hardware** → one folder in `displays/`, registry line.
+- **Mic input** → one file in `adapters/inputs/`, registry line, `input.type: mic`.
+- **Vestaboard / DIY hardware** → one folder in `adapters/displays/`, registry line.
 - **Push-data sources** (Strava, calendar, weather) → a designer-only entry
   point that feeds content straight into the existing `LayoutSpec` renderer.

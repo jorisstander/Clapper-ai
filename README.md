@@ -10,10 +10,10 @@ clapper-ai is three boxes. The middle one never changes; the ends are plug-in
 adapters you swap in `config.yaml`:
 
 ```
-   INPUT                      BRAIN                       DISPLAY
+   INPUT                     ANSWER                       DISPLAY
 ┌───────────┐        ┌───────────────────┐        ┌──────────────────┐
 │ keyboard  │  text  │  ask LLM          │  grid  │ virtual board    │
-│ mic*      │ ─────► │  text → tile grid │ ─────► │ Vestaboard*      │
+│ mic*      │ ─────► │  question → grid  │ ─────► │ Vestaboard*      │
 │ phone*    │        │  validate         │        │ DIY hardware*    │
 └───────────┘        └───────────────────┘        └──────────────────┘
                           * = later phase
@@ -25,9 +25,9 @@ tiles (see [docs/character-codes.md](docs/character-codes.md)). Any input that
 produces text and any display that renders a grid can join, which is why the
 folders are laid out the way they are:
 
-- `src/clapper_ai/inputs/` — one file per input device
-- `src/clapper_ai/displays/` — one folder per display device
-- `src/clapper_ai/core/` — the Brain and the contract; never imports an adapter
+- `src/clapper_ai/adapters/inputs/` — one file per input device
+- `src/clapper_ai/adapters/displays/` — one folder per display device
+- `src/clapper_ai/domain/` + `src/clapper_ai/application/` — the core; never imports an adapter
 
 **Adding a device later = one new file + one config line.** No core changes.
 See [docs/add-your-own-board.md](docs/add-your-own-board.md) and
@@ -65,10 +65,14 @@ layouts with color accents, web search for live facts, and full-tile art
 ```
 config.yaml            pick your input / display / llm here
 src/clapper_ai/
-  core/                the contract: codes, grid, validate, interfaces, brain
-  inputs/              InputSource adapters (text_input.py today)
-  displays/            DisplaySink adapters (virtual/ today)
-  llm/                 LLMClient adapters (fake.py, anthropic_client.py)
+  domain/              tile codes, Grid, LayoutSpec, text layout, grid rules
+  application/
+    interactors/       AnswerQuestion — one turn, question to board
+    ports/             the three protocols the app speaks
+  adapters/
+    inputs/            InputSource adapters (text_input.py today)
+    displays/          DisplaySink adapters (virtual/ today)
+    llm/               LLMClient adapters (echo.py, anthropic_client.py)
 docs/                  architecture + how to add your own device
 tests/
 ```

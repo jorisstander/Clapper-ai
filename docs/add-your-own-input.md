@@ -1,7 +1,7 @@
 # Add your own input
 
 An input is any object that satisfies `InputSource`
-(`src/clapper_ai/core/interfaces.py`):
+(`src/clapper_ai/application/ports/input_source.py`):
 
 ```python
 class InputSource(Protocol):
@@ -14,7 +14,7 @@ and the app should shut down.
 
 ## Worked example: canned demo input
 
-Save as `src/clapper_ai/inputs/demo_input.py`:
+Save as `src/clapper_ai/adapters/inputs/demo_input.py`:
 
 ```python
 """Plays a scripted demo: one canned prompt every few seconds."""
