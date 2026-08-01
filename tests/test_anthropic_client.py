@@ -4,7 +4,7 @@ import pytest
 
 anthropic = pytest.importorskip("anthropic", reason="install the `llm` extra to test this")
 
-from clapper_ai.llm.anthropic_client import AnthropicClient  # noqa: E402
+from clapper_ai.adapters.llm.anthropic_client import AnthropicClient  # noqa: E402
 
 
 class FakeMessages:
@@ -74,7 +74,7 @@ async def test_refusal_raises_so_the_caller_can_apologize():
 
 
 async def test_client_wraps_the_question_in_the_answer_prompt():
-    from clapper_ai.llm.anthropic_client import ANSWER_PROMPT
+    from clapper_ai.adapters.llm.anthropic_client import ANSWER_PROMPT
 
     client, fake = make_client("PARIS")
     await client.complete("capital of france?", max_chars=132)

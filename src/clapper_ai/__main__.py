@@ -14,11 +14,11 @@ import uvicorn
 import yaml
 from pydantic import BaseModel
 
+from clapper_ai.adapters.displays.virtual.server import create_app
+from clapper_ai.adapters.displays.virtual.sink import VirtualBoard
+from clapper_ai.adapters.inputs.text_input import TextInput
+from clapper_ai.adapters.llm.echo import EchoLLMClient
 from clapper_ai.application.interactors.answer_question import AnswerQuestion
-from clapper_ai.displays.virtual.server import create_app
-from clapper_ai.displays.virtual.sink import VirtualBoard
-from clapper_ai.inputs.text_input import TextInput
-from clapper_ai.llm.fake import FakeLLMClient
 
 HOST = "127.0.0.1"
 # Override with PORT=8123 if something else already owns 8000.
@@ -62,19 +62,19 @@ DISPLAYS = {
 
 def _make_anthropic(config: AppConfig):
     # Imported lazily so the base install never needs the anthropic package.
-    from clapper_ai.llm.anthropic_client import AnthropicClient
+    from clapper_ai.adapters.llm.anthropic_client import AnthropicClient
 
     return AnthropicClient()
 
 
 def _make_smart_anthropic(config: AppConfig):
-    from clapper_ai.llm.anthropic_smart import SmartAnthropicClient
+    from clapper_ai.adapters.llm.anthropic_smart import SmartAnthropicClient
 
     return SmartAnthropicClient(rows=config.board.rows, cols=config.board.cols)
 
 
 LLMS = {
-    "fake": lambda config: FakeLLMClient(),
+    "fake": lambda config: EchoLLMClient(),
     "anthropic": _make_anthropic,
     "anthropic-smart": _make_smart_anthropic,
 }

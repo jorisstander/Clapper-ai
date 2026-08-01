@@ -4,7 +4,7 @@ import builtins
 
 import pytest
 
-from clapper_ai.inputs.text_input import TextInput
+from clapper_ai.adapters.inputs.text_input import TextInput
 
 
 async def test_listen_returns_the_typed_line(monkeypatch):

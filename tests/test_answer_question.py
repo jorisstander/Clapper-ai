@@ -1,14 +1,14 @@
-"""Tests for the AnswerQuestion, using the FakeLLMClient and a fake DisplaySink.
+"""Tests for the AnswerQuestion, using the EchoLLMClient and a fake DisplaySink.
 
 No network, no browser — the AnswerQuestion only ever sees the three protocols,
 so fakes are all we need to test it end to end.
 """
 
+from clapper_ai.adapters.llm.echo import EchoLLMClient
 from clapper_ai.application.interactors.answer_question import AnswerQuestion
 from clapper_ai.domain.grid import Grid, blank_grid
 from clapper_ai.domain.layout import ArtLayout, Line, TextLayout
 from clapper_ai.domain.text_layout import text_to_grid
-from clapper_ai.llm.fake import FakeLLMClient
 
 
 class FakeDisplay:
@@ -77,7 +77,7 @@ async def test_oversized_reply_still_renders_a_valid_grid():
 
 
 async def test_fake_llm_is_deterministic_and_fits_budget():
-    fake = FakeLLMClient()
+    fake = EchoLLMClient()
     first = await fake.complete("HELLO", max_chars=30)
     second = await fake.complete("HELLO", max_chars=30)
     assert first == second
@@ -86,14 +86,14 @@ async def test_fake_llm_is_deterministic_and_fits_budget():
 
 
 async def test_fake_llm_echoes_the_question():
-    fake = FakeLLMClient()
+    fake = EchoLLMClient()
     reply = await fake.complete("HELLO BOARD", max_chars=100)
     assert reply == "YOU SAID HELLO BOARD"
 
 
 async def test_end_to_end_with_the_fake_llm():
     display = FakeDisplay(rows=6, cols=22)
-    answer_question = AnswerQuestion(llm=FakeLLMClient(), display=display)
+    answer_question = AnswerQuestion(llm=EchoLLMClient(), display=display)
 
     await answer_question.execute("ping")
 

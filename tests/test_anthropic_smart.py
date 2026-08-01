@@ -6,8 +6,8 @@ import pytest
 
 pytest.importorskip("anthropic", reason="install the `llm` extra to test this")
 
+from clapper_ai.adapters.llm.anthropic_smart import SmartAnthropicClient  # noqa: E402
 from clapper_ai.domain.layout import ArtLayout, TextLayout  # noqa: E402
-from clapper_ai.llm.anthropic_smart import SmartAnthropicClient  # noqa: E402
 
 
 class FakeMessages:
@@ -97,7 +97,7 @@ def test_color_names_match_the_tile_codes():
     # The real drift risk: render_layout does COLOR_CODES[line.color], so every
     # ColorName must exist in tile_codes.py (and vice versa, so the schema stays
     # in sync with the renderer).
+    from clapper_ai.adapters.llm.anthropic_smart import _COLOR_NAMES
     from clapper_ai.domain.tile_codes import COLOR_CODES
-    from clapper_ai.llm.anthropic_smart import _COLOR_NAMES
 
     assert _COLOR_NAMES == list(COLOR_CODES)
