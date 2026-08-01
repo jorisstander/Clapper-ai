@@ -7,20 +7,17 @@ drop-in display later:
     1-26     A-Z
     27-36    digits 1,2,...,9,0  (note: 0 is code 36, after 9)
     63-69    color tiles: red, orange, yellow, green, blue, violet, white
-
-TODO: punctuation codes (37-62) can be filled in from Vestaboard's official
-Character Codes reference later.
 """
 
 BLANK = 0
 
 # Character → tile code. Unknown characters are not in this map;
 # text_to_grid renders them as blanks.
-CHAR_TO_CODE: dict[str, int] = {" ": BLANK}
-for i, letter in enumerate("ABCDEFGHIJKLMNOPQRSTUVWXYZ", start=1):
-    CHAR_TO_CODE[letter] = i
-for i, digit in enumerate("1234567890", start=27):
-    CHAR_TO_CODE[digit] = i
+CHAR_TO_CODE: dict[str, int] = {
+    " ": BLANK,
+    **{letter: i for i, letter in enumerate("ABCDEFGHIJKLMNOPQRSTUVWXYZ", start=1)},
+    **{digit: i for i, digit in enumerate("1234567890", start=27)},
+}
 
 # Color tiles have no character; address them by name.
 COLOR_CODES: dict[str, int] = {
