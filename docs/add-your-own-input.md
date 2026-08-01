@@ -41,6 +41,8 @@ class DemoInput:
 
 ```python
 # src/clapper_ai/__main__.py
+from clapper_ai.adapters.inputs.demo_input import DemoInput  # add with the other imports
+
 INPUTS = {
     "text": lambda config: TextInput(),
     "demo": lambda config: DemoInput(),

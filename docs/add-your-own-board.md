@@ -23,8 +23,8 @@ A complete, working display in ~20 lines. Save as
 ```python
 """Prints each grid to the terminal. The simplest possible DisplaySink."""
 
-from clapper_ai.domain.tile_codes import CODE_TO_CHAR
 from clapper_ai.domain.grid import Grid
+from clapper_ai.domain.tile_codes import CODE_TO_CHAR
 
 
 class TerminalBoard:
@@ -45,6 +45,8 @@ class TerminalBoard:
 Add one line to the `DISPLAYS` registry in `src/clapper_ai/__main__.py`:
 
 ```python
+from clapper_ai.adapters.displays.terminal import TerminalBoard  # add with the other imports
+
 DISPLAYS = {
     "virtual": lambda config: VirtualBoard(rows=config.board.rows, cols=config.board.cols),
     "terminal": lambda config: TerminalBoard(rows=config.board.rows, cols=config.board.cols),

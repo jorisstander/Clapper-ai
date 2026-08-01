@@ -26,10 +26,10 @@ produces text and any display that renders a grid can join, which is why the
 folders are laid out the way they are:
 
 - `src/clapper_ai/adapters/inputs/` — one file per input device
-- `src/clapper_ai/adapters/displays/` — one folder per display device
+- `src/clapper_ai/adapters/displays/` — one file (or folder) per display device
 - `src/clapper_ai/domain/` + `src/clapper_ai/application/` — the core; never imports an adapter
 
-**Adding a device later = one new file + one config line.** No core changes.
+**Adding a device later = one new file, one registry line, one config line.** No core changes.
 See [docs/add-your-own-board.md](docs/add-your-own-board.md) and
 [docs/add-your-own-input.md](docs/add-your-own-input.md).
 
@@ -67,12 +67,12 @@ config.yaml            pick your input / display / llm here
 src/clapper_ai/
   domain/              tile codes, Grid, LayoutSpec, text layout, grid rules
   application/
-    interactors/       AnswerQuestion — one turn, question to board
+    interactors/       AnswerQuestion — the use case: one turn, question to board
     ports/             the three protocols the app speaks
   adapters/
     inputs/            InputSource adapters (text_input.py today)
     displays/          DisplaySink adapters (virtual/ today)
-    llm/               LLMClient adapters (echo.py, anthropic_client.py)
+    llm/               LLMClient adapters (echo.py — the `fake` type, anthropic_client.py)
 docs/                  architecture + how to add your own device
 tests/
 ```

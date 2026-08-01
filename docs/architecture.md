@@ -14,12 +14,36 @@ Around that contract sit three protocols, one file each under
 | Protocol | Job | Today's adapter |
 |---|---|---|
 | `InputSource` | `listen() -> str` — wait for an utterance | `TextInput` (stdin) |
-| `LLMClient` | `complete(prompt, max_chars) -> str` | `EchoLLMClient`, `AnthropicClient` |
+| `LLMClient` | `complete(prompt, max_chars) -> str \| LayoutSpec` | `EchoLLMClient` (config `fake`), `AnthropicClient` |
 | `DisplaySink` | `render(grid)` — show it, own the animation | `VirtualBoard` (browser) |
 
 `AnswerQuestion` (`application/interactors/answer_question.py`) depends **only**
 on these protocols. It never imports a concrete adapter, which is what keeps the
 ends swappable.
+
+## Three layers, one direction
+
+The folders under `src/clapper_ai/` are layers, and the split comes down to what
+each one would still need if you deleted the rest. `domain/` holds the tile rules
+— what a code means, what shape a grid may take, how text becomes one — and those
+would hold even if nobody ever wired an LLM to a board. `application/` holds the
+single turn the app performs, `AnswerQuestion`, plus the three ports it speaks
+through: it knows there is an input, a model, and a display, but never which ones.
+`adapters/` is everything that touches the outside world — a terminal, a browser
+socket, an HTTP call to Anthropic.
+
+Dependencies point inward only. An adapter may import from `domain/` and
+`application/`; neither of those may ever import an adapter, and that one-way rule
+is what lets you swap the ends without touching the middle. `__main__.py` sits
+outside the stack as the only module allowed to name concrete adapters — which is
+all the registries below really are. The rule is checkable:
+
+```bash
+grep -rn "from clapper_ai.adapters" src/clapper_ai/domain src/clapper_ai/application
+```
+
+That returns nothing today, and a change that makes it print something is a change
+that broke the architecture.
 
 ## The flow
 

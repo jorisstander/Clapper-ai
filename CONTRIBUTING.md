@@ -33,7 +33,7 @@ updated `uv.lock`. CI syncs with `--locked` and fails if the two disagree.
 - **The core never imports a concrete adapter.** `AnswerQuestion` talks only to the
   `InputSource`, `DisplaySink`, and `LLMClient` protocols in
   `src/clapper_ai/application/ports/`.
-- **New device = one new file + one config line.** Add an input under
+- **New device = one new file, one registry line, one config line.** Add an input under
   `src/clapper_ai/adapters/inputs/`, a display under
   `src/clapper_ai/adapters/displays/`, register it in `src/clapper_ai/__main__.py`,
   done. See `docs/add-your-own-board.md`.
