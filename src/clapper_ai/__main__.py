@@ -2,7 +2,7 @@
 
 The registries below are the whole plugin system. To add a device:
 write one file implementing the protocol, add one line to a registry,
-name it in config.yaml. The Brain never changes.
+name it in config.yaml. The AnswerQuestion never changes.
 """
 
 import asyncio
@@ -14,7 +14,7 @@ import uvicorn
 import yaml
 from pydantic import BaseModel
 
-from clapper_ai.core.brain import Brain
+from clapper_ai.application.interactors.answer_question import AnswerQuestion
 from clapper_ai.displays.virtual.server import create_app
 from clapper_ai.displays.virtual.sink import VirtualBoard
 from clapper_ai.inputs.text_input import TextInput
@@ -100,7 +100,7 @@ def build_adapters(config: AppConfig):
 
 async def run(config: AppConfig) -> None:
     source, display, llm = build_adapters(config)
-    brain = Brain(llm=llm, display=display)
+    brain = AnswerQuestion(llm=llm, display=display)
 
     server = None
     server_task = None
@@ -115,7 +115,7 @@ async def run(config: AppConfig) -> None:
     try:
         while True:
             text = await source.listen()
-            await brain.handle(text)
+            await brain.execute(text)
     except EOFError:
         print("\nBye.")
     finally:

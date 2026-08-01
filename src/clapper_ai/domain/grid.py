@@ -1,7 +1,7 @@
 """The one data structure everything speaks: a grid of tile codes.
 
 A Grid is rows x cols of ints; each int is one tile code (see tile_codes.py).
-Inputs produce text, the Brain turns it into a Grid, displays render Grids.
+Inputs produce text, the AnswerQuestion turns it into a Grid, displays render Grids.
 """
 
 Grid = list[list[int]]

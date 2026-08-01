@@ -121,7 +121,7 @@ class SmartAnthropicClient:
         )
         texts = [block.text for block in response.content if block.type == "text"]
         if response.stop_reason == "refusal" or not texts:
-            # The Brain catches this and shows its apology grid.
+            # The AnswerQuestion catches this and shows its apology grid.
             raise RuntimeError(f"Model refused or gave no answer ({response.stop_reason})")
         data = json.loads(texts[-1])  # last text block: search blocks may precede it
         return _LAYOUT_ADAPTER.validate_python(data["layout"])
