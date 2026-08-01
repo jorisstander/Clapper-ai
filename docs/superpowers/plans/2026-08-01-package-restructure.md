@@ -567,7 +567,7 @@ values are unchanged, verified by diffing the built maps before and after."
 - [ ] **Step 1: Find every stale reference**
 
 ```bash
-grep -rn "core/\|clapper_ai\.core\|codes\.py\|validate\.py\|fake\.py\|interfaces\.py\|\bBrain\b\|FakeLLMClient\|src/clapper_ai/\(inputs\|displays\|llm\)" \
+grep -rn "core/\|clapper_ai\.core\|\bcodes\.py\|validate\.py\|fake\.py\|interfaces\.py\|\bBrain\b\|FakeLLMClient\|src/clapper_ai/\(inputs\|displays\|llm\)" \
   --include=*.md --include=*.js --include=*.html . | grep -v "docs/superpowers\|\.venv"
 ```
 
@@ -664,11 +664,16 @@ occurrence of "the Brain" with "AnswerQuestion" and update the module paths. In
 Re-run step 1's pattern, character for character:
 
 ```bash
-grep -rn "core/\|clapper_ai\.core\|codes\.py\|validate\.py\|fake\.py\|interfaces\.py\|\bBrain\b\|FakeLLMClient\|src/clapper_ai/\(inputs\|displays\|llm\)" \
+grep -rn "core/\|clapper_ai\.core\|\bcodes\.py\|validate\.py\|fake\.py\|interfaces\.py\|\bBrain\b\|FakeLLMClient\|src/clapper_ai/\(inputs\|displays\|llm\)" \
   --include=*.md --include=*.js --include=*.html . | grep -v "docs/superpowers\|\.venv"
 ```
 
 Expected: no output.
+
+**Note the word boundary on `\bcodes\.py`.** Without it the pattern matches
+`tile_codes.py` as a substring — the new, correct filename — so "expected: no output"
+would be unreachable and the check could never pass. `_` is a word character, so
+`\b` before `codes` excludes `tile_codes` while still catching a bare `codes.py`.
 
 **It must be the same pattern as step 1, not a subset.** A verification grep narrower
 than the search grep cannot prove the search was complete — it returns "no output" for
