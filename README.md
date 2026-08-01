@@ -74,6 +74,7 @@ src/clapper_ai/
     displays/          DisplaySink adapters (virtual/ today)
     llm/               LLMClient adapters (echo.py — the `fake` type, anthropic_client.py)
 docs/                  architecture + how to add your own device
+  design/              design notes and implementation plans for larger changes
 tests/
 ```
 

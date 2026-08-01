@@ -1,6 +1,6 @@
 # Package Restructure Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> This plan is worked task by task, in order. The `- [ ]` checkboxes track progress.
 
 **Goal:** Dissolve `core/` into `domain/`, `application/` and `adapters/` so the clean-architecture layers are readable from the directory tree.
 
@@ -8,7 +8,7 @@
 
 **Tech Stack:** Python 3.14, uv, pytest, ruff, pydantic.
 
-**Spec:** `docs/superpowers/specs/2026-08-01-package-restructure-design.md`
+**Spec:** `docs/design/specs/2026-08-01-package-restructure-design.md`
 
 ---
 
@@ -568,7 +568,7 @@ values are unchanged, verified by diffing the built maps before and after."
 
 ```bash
 grep -rn "core/\|clapper_ai\.core\|\bcodes\.py\|validate\.py\|fake\.py\|interfaces\.py\|\bBrain\b\|FakeLLMClient\|src/clapper_ai/\(inputs\|displays\|llm\)" \
-  --include=*.md --include=*.js --include=*.html . | grep -v "docs/superpowers\|\.venv"
+  --include=*.md --include=*.js --include=*.html . | grep -v "docs/design\|\.venv"
 ```
 
 **Match symbols, not only paths.** An earlier version of this grep listed only the
@@ -665,7 +665,7 @@ Re-run step 1's pattern, character for character:
 
 ```bash
 grep -rn "core/\|clapper_ai\.core\|\bcodes\.py\|validate\.py\|fake\.py\|interfaces\.py\|\bBrain\b\|FakeLLMClient\|src/clapper_ai/\(inputs\|displays\|llm\)" \
-  --include=*.md --include=*.js --include=*.html . | grep -v "docs/superpowers\|\.venv"
+  --include=*.md --include=*.js --include=*.html . | grep -v "docs/design\|\.venv"
 ```
 
 Expected: no output.
@@ -709,7 +709,7 @@ port should carry. The dependency rule is about imports, so the check must be to
 - [ ] **Step 2: Prove no import escaped**
 
 ```bash
-grep -rn "clapper_ai\.core" --include=*.py --include=*.md . | grep -v "\.venv\|docs/superpowers\|__pycache__"
+grep -rn "clapper_ai\.core" --include=*.py --include=*.md . | grep -v "\.venv\|docs/design\|__pycache__"
 ```
 
 Expected: no output.

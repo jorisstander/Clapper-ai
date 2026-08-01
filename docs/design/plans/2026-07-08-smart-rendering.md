@@ -1,6 +1,6 @@
 # Smart Rendering Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> This plan is worked task by task, in order. The `- [ ]` checkboxes track progress.
 
 **Goal:** One API call answers a question (with web search) AND designs the board — centered text layouts with color accents, or full-board tile art — rendered deterministically and safely.
 
@@ -8,7 +8,7 @@
 
 **Tech Stack:** Python 3.11+, Pydantic (discriminated union + TypeAdapter), Anthropic Messages API (`claude-opus-4-8`, `output_config.format` JSON schema, `web_search_20260209`), pytest with fakes (no network in tests).
 
-**Spec:** `docs/superpowers/specs/2026-07-08-smart-rendering-design.md`
+**Spec:** `docs/design/specs/2026-07-08-smart-rendering-design.md`
 
 **Conventions for every task:** run commands from the repo root with the venv:
 `.venv/bin/pytest`, `.venv/bin/ruff check .`. Commit after each task with the message given. TDD: never write implementation before you have watched its test fail.
