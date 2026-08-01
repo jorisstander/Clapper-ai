@@ -5,9 +5,9 @@ so fakes are all we need to test it end to end.
 """
 
 from clapper_ai.core.brain import Brain
-from clapper_ai.core.grid import Grid, blank_grid
-from clapper_ai.core.layout import ArtLayout, Line, TextLayout
-from clapper_ai.core.validate import text_to_grid
+from clapper_ai.domain.grid import Grid, blank_grid
+from clapper_ai.domain.layout import ArtLayout, Line, TextLayout
+from clapper_ai.domain.text_layout import text_to_grid
 from clapper_ai.llm.fake import FakeLLMClient
 
 

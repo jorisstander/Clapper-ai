@@ -9,8 +9,8 @@ from typing import Annotated, Literal
 
 from pydantic import BaseModel, Field
 
-from clapper_ai.core.codes import BLANK, CHAR_TO_CODE, COLOR_CODES
-from clapper_ai.core.grid import Grid, blank_grid
+from clapper_ai.domain.grid import Grid, blank_grid
+from clapper_ai.domain.tile_codes import BLANK, CHAR_TO_CODE, COLOR_CODES
 
 ColorName = Literal["red", "orange", "yellow", "green", "blue", "violet", "white"]
 

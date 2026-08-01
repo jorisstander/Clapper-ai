@@ -5,7 +5,7 @@ the page (static/board.js) owns the flip animation. The board also keeps
 the latest grid so a tab that connects late still shows the current state.
 """
 
-from clapper_ai.core.grid import Grid, blank_grid
+from clapper_ai.domain.grid import Grid, blank_grid
 
 
 class VirtualBoard:

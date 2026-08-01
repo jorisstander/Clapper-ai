@@ -1,8 +1,8 @@
 """Tests for render_layout: LayoutSpec in, valid grid out."""
 
-from clapper_ai.core.codes import ALLOWED_CODES, CHAR_TO_CODE
-from clapper_ai.core.layout import ArtLayout, Line, TextLayout, render_layout
-from clapper_ai.core.validate import validate_grid
+from clapper_ai.domain.grid_rules import validate_grid
+from clapper_ai.domain.layout import ArtLayout, Line, TextLayout, render_layout
+from clapper_ai.domain.tile_codes import ALLOWED_CODES, CHAR_TO_CODE
 
 
 def text_spec(*lines: Line) -> TextLayout:

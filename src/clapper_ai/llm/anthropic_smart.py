@@ -14,7 +14,7 @@ from typing import get_args
 
 from pydantic import TypeAdapter
 
-from clapper_ai.core.layout import ArtLayout, ColorName, LayoutSpec, TextLayout
+from clapper_ai.domain.layout import ArtLayout, ColorName, LayoutSpec, TextLayout
 
 SYSTEM_PROMPT = (
     "You control a split-flap display of {rows} rows x {cols} columns. Each tile "

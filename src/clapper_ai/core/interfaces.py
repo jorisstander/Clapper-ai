@@ -7,8 +7,8 @@ whether it's a keyboard or a microphone, a browser canvas or real hardware.
 
 from typing import Protocol
 
-from clapper_ai.core.grid import Grid
-from clapper_ai.core.layout import LayoutSpec
+from clapper_ai.domain.grid import Grid
+from clapper_ai.domain.layout import LayoutSpec
 
 
 class InputSource(Protocol):

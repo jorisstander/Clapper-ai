@@ -7,11 +7,12 @@ If the LLM call or its layout fails, the board still responds: it falls back
 to an apology, or — if even that can't pass validation — a blank grid.
 """
 
-from clapper_ai.core.codes import ALLOWED_CODES
-from clapper_ai.core.grid import blank_grid
 from clapper_ai.core.interfaces import DisplaySink, LLMClient
-from clapper_ai.core.layout import render_layout
-from clapper_ai.core.validate import text_to_grid, validate_grid
+from clapper_ai.domain.grid import blank_grid
+from clapper_ai.domain.grid_rules import validate_grid
+from clapper_ai.domain.layout import render_layout
+from clapper_ai.domain.text_layout import text_to_grid
+from clapper_ai.domain.tile_codes import ALLOWED_CODES
 
 # Shown when the LLM call or its layout fails — the board always responds.
 FALLBACK_TEXT = "SORRY, TRY AGAIN"
