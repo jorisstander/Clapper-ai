@@ -661,14 +661,20 @@ occurrence of "the Brain" with "AnswerQuestion" and update the module paths. In
 
 - [ ] **Step 7: Confirm nothing stale is left**
 
+Re-run step 1's pattern, character for character:
+
 ```bash
-grep -rn "core/\|clapper_ai\.core\|\bBrain\b\|llm/fake\.py\|FakeLLMClient\|interfaces\.py" \
-  --include=*.md --include=*.js --include=*.html . \
-  | grep -v "docs/superpowers\|\.venv"
+grep -rn "core/\|clapper_ai\.core\|codes\.py\|validate\.py\|fake\.py\|interfaces\.py\|\bBrain\b\|FakeLLMClient\|src/clapper_ai/\(inputs\|displays\|llm\)" \
+  --include=*.md --include=*.js --include=*.html . | grep -v "docs/superpowers\|\.venv"
 ```
 
-Expected: no output. This must mirror step 1's pattern — a verification grep narrower
-than the search grep cannot prove the search was complete.
+Expected: no output.
+
+**It must be the same pattern as step 1, not a subset.** A verification grep narrower
+than the search grep cannot prove the search was complete — it returns "no output" for
+references it was never looking for. Note that after Task 4, `src/clapper_ai/adapters/displays/…`
+no longer matches the `src/clapper_ai/\(inputs\|displays\|llm\)` alternation, so that
+clause is a genuine must-be-zero check on the moved paths rather than only a find-time net.
 
 - [ ] **Step 8: Commit**
 

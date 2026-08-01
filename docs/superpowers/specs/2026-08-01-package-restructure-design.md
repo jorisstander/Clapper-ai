@@ -192,9 +192,10 @@ Each needs its own tests and its own commit.
    digits and colours exist today. Moved here from the `codes.py` docstring.
 8. **The board still says FAKE.** `adapters/llm/echo.py` greets an empty prompt
    with `"HELLO FROM THE FAKE LLM"`. That literal is user-visible board output, so
-   changing it is behavioural and stayed out of the rename commit — but it is now
-   the only place the word survives where an actual person reads it, and it names
-   a class that no longer exists. Successor: `"HELLO FROM THE ECHO LLM"`. Note that
+   changing it is behavioural and stayed out of the rename commit — but it names a
+   class that no longer exists, and unlike the `fake` config value (which is public
+   interface and deliberately kept), this string has no reason to survive.
+   Successor: `"HELLO FROM THE ECHO LLM"`. Note that
    branch has no test today, so the change has no regression net; add one with it.
 9. **`text_layout.py` sits beside a class called `TextLayout`.** The module holds
    `text_to_grid` (plain-string word-wrap); the class in `domain/layout.py` is the
