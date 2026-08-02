@@ -111,7 +111,7 @@ async def run(config: AppConfig) -> None:
             uvicorn.Config(create_app(display), host=HOST, port=PORT, log_level="warning")
         )
         server_task = asyncio.create_task(server.serve())
-        print(f"Virtual board at http://{HOST}:{PORT} — open it in a browser.")
+        print(f"Virtual board at http://{HOST}:{PORT} - open it in a browser.")
 
     print("Type a prompt and press Enter. Ctrl-D quits.")
     try:
