@@ -80,6 +80,21 @@ tests/
 
 More depth in [docs/architecture.md](docs/architecture.md).
 
+## Credits
+
+The idea came from [this TikTok by @karenxcheng](https://www.tiktok.com/@karenxcheng/video/7660999840440093982).
+I wanted a board of my own, but one that only prints your text straight back at
+you is a typewriter with extra steps.
+
+So the reason this build exists is the *smart* version: the AI decides how the
+answer should look, not just what it says. It picks the layout, centers the line
+that matters, adds color accents, or paints the whole board as art. That is why
+the contract between brain and board is a `LayoutSpec` rather than a string, and
+why `render_layout()` stays pure and deterministic. The model gets to design, and
+the renderer still decides what is actually legal on a 6x22 grid of tiles.
+
+Try it with `llm.type: anthropic-smart`.
+
 ## Contributing & license
 
 PRs welcome — read [CONTRIBUTING.md](CONTRIBUTING.md) first.
