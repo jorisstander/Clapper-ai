@@ -25,7 +25,7 @@ uv run python -m clapper_ai
 You'll see:
 
 ```
-Virtual board at http://127.0.0.1:8000 — open it in a browser.
+Virtual board at http://127.0.0.1:8000 - open it in a browser.
 Type a prompt and press Enter. Ctrl-D quits.
 >
 ```
